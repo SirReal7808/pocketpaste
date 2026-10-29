@@ -4,9 +4,7 @@ import android.content.Context
 import android.net.nsd.NsdManager
 import android.net.nsd.NsdServiceInfo
 import android.os.Build
-import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -102,7 +100,7 @@ object Discovery {
     }
 }
 
-/** Retries the outbox every ~15 minutes while on Wi-Fi, and cancels itself once the outbox is empty. */
+/** Retries the outbox every ~15 minutes and cancels itself once the outbox is empty. */
 class OutboxWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
     override fun doWork(): Result {
         val pairing = Graph.pairing(applicationContext) ?: return Result.success()
@@ -115,11 +113,15 @@ class OutboxWorker(context: Context, params: WorkerParameters) : Worker(context,
 object Retry {
     private const val NAME = "outbox-retry"
 
+    /**
+     * No network constraint on purpose: Android 15+ blocks background network for idle apps, and
+     * JobScheduler then never considers a connectivity constraint satisfied (Samsung also batches
+     * such jobs for up to ~30 minutes). A running job gets network access, and an unreachable Mac
+     * fails within a few seconds, so trying every period is cheap.
+     */
     fun schedule(context: Context) {
-        val request = PeriodicWorkRequest.Builder(OutboxWorker::class.java, 15, TimeUnit.MINUTES)
-            .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.UNMETERED).build())
-            .build()
-        WorkManager.getInstance(context).enqueueUniquePeriodicWork(NAME, ExistingPeriodicWorkPolicy.KEEP, request)
+        val request = PeriodicWorkRequest.Builder(OutboxWorker::class.java, 15, TimeUnit.MINUTES).build()
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(NAME, ExistingPeriodicWorkPolicy.UPDATE, request)
     }
 
     fun cancel(context: Context) {

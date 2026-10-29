@@ -159,6 +159,12 @@ class MainActivity : Activity() {
         result.text = "Deneniyor…"
         background {
             val r = Graph.sender(this, pairing).ping()
+            // Manual entry doesn't know the Mac's name; take it from the reply.
+            val macName = if (r.status == 200) runCatching { org.json.JSONObject(r.body).getString("name") }.getOrNull() else null
+            if (macName != null && macName != pairing.name) {
+                Graph.savePairing(this, pairing.copy(name = macName))
+                ui { showPairing() }
+            }
             val text = when {
                 r.status == 200 -> "Bağlantı başarılı ✓"
                 r.status == 401 -> "Mac'e ulaşıldı ama anahtar uyuşmuyor. QR kodunu yeniden okutun."
@@ -193,6 +199,8 @@ class MainActivity : Activity() {
     private fun refreshPending() {
         background {
             val count = Graph.outbox(this).count()
+            // Also refreshes the retry schedule after an app update.
+            if (count > 0) Retry.schedule(this)
             ui { pending.text = if (count == 0) "Bekleyen öğe yok" else "Bekleyen: $count öğe" }
         }
     }

@@ -116,7 +116,11 @@ final class StatusController: NSObject, NSMenuDelegate {
         menuItem.representedObject = item.id
         menuItem.toolTip = MenuText.fullDate(item.sentDate)
         if item.isImage {
-            menuItem.image = thumbnail(for: item)
+            let url = store.url(for: item)
+            menuItem.view = ImageRowView(
+                thumbnail: thumbnail(for: item), title: title, toolTip: MenuText.fullDate(item.sentDate),
+                onCopy: { [weak self] in self?.copy(id: item.id) },
+                onReveal: { NSWorkspace.shared.activateFileViewerSelecting([url]) })
         }
         return menuItem
     }
@@ -140,9 +144,12 @@ final class StatusController: NSObject, NSMenuDelegate {
     // MARK: Actions
 
     @objc private func copyItem(_ sender: NSMenuItem) {
-        guard let id = sender.representedObject as? String,
-              let item = store.items.first(where: { $0.id == id })
-        else {
+        guard let id = sender.representedObject as? String else { return }
+        copy(id: id)
+    }
+
+    private func copy(id: String) {
+        guard let item = store.items.first(where: { $0.id == id }) else {
             NSSound.beep()
             return
         }

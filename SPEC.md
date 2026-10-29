@@ -9,7 +9,7 @@ Android'de Paylaş menüsünden seçilen metni veya görseli aynı Wi-Fi'daki Ma
 - Taşıma düz HTTP. İçerik, eşleşmede paylaşılan 256-bit anahtarla AES-256-GCM ile şifrelenir. Anahtar ağda hiç dolaşmaz.
 - Tek telefon eşleşir. Yeniden eşleştirme yeni anahtar üretir, eskisi geçersiz olur.
 - Eşleşme Mac'te gösterilen QR koduyla yapılır.
-- Bulma: önce Bonjour (`_macclip._tcp`), olmazsa QR'daki IP ve port.
+- Bulma: önce eşleşmedeki IP ve port (statik IP ile en hızlısı), ulaşılamazsa Bonjour (`_macclip._tcp`, TXT `kid` ile doğru Mac seçilir).
 
 ### Mac uygulaması
 - Swift, yalnızca menü çubuğu (Dock'ta yok).

@@ -141,11 +141,18 @@ final class StatusController: NSObject, NSMenuDelegate {
 
     @objc private func copyItem(_ sender: NSMenuItem) {
         guard let id = sender.representedObject as? String,
-              let item = store.items.first(where: { $0.id == id }),
-              Pasteboard.copy(item, from: store)
+              let item = store.items.first(where: { $0.id == id })
         else {
             NSSound.beep()
             return
+        }
+        let url = store.url(for: item)
+        // Converting a large photo takes a moment; keep the menu bar responsive meanwhile.
+        DispatchQueue.global(qos: .userInitiated).async {
+            let content = Pasteboard.Content.load(item, from: url)
+            DispatchQueue.main.async {
+                if content?.write() != true { NSSound.beep() }
+            }
         }
     }
 
@@ -156,18 +163,28 @@ final class StatusController: NSObject, NSMenuDelegate {
 }
 
 enum Pasteboard {
-    /// Images always go to the pasteboard as PNG, whatever format the phone sent.
-    static func copy(_ item: HistoryItem, from store: HistoryStore) -> Bool {
-        let url = store.url(for: item)
-        let pasteboard = NSPasteboard.general
-        if item.isImage {
-            guard let png = ImageRendering.pngData(contentsOf: url) else { return false }
-            pasteboard.clearContents()
-            return pasteboard.setData(png, forType: .png)
+    enum Content {
+        case text(String)
+        case png(Data)
+
+        /// Images always go to the pasteboard as PNG, whatever format the phone sent, scaled down if very large.
+        /// Safe to call off the main thread.
+        static func load(_ item: HistoryItem, from url: URL) -> Content? {
+            if item.isImage {
+                return ImageRendering.pngData(contentsOf: url).map(Content.png)
+            }
+            guard let data = try? Data(contentsOf: url), let text = String(data: data, encoding: .utf8) else { return nil }
+            return .text(text)
         }
-        guard let data = try? Data(contentsOf: url), let text = String(data: data, encoding: .utf8) else { return false }
-        pasteboard.clearContents()
-        return pasteboard.setString(text, forType: .string)
+
+        func write() -> Bool {
+            let pasteboard = NSPasteboard.general
+            pasteboard.clearContents()
+            switch self {
+            case .text(let text): return pasteboard.setString(text, forType: .string)
+            case .png(let data): return pasteboard.setData(data, forType: .png)
+            }
+        }
     }
 }
 

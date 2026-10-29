@@ -17,7 +17,7 @@ Android'de Paylaş menüsünden seçilen metni veya görseli aynı Wi-Fi'daki Ma
 - Sıralama ve gösterilen saat: telefonda **paylaşıldığı** saat (gelme saati değil).
 - Metin: tek satıra indirilmiş, 50 karakterde kısaltılmış.
 - Görsel: küçük önizleme ve "Görsel · SS:DD".
-- Tıklayınca panoya kopyalanır. Görseller panoya **her zaman PNG** olarak yazılır. Gelen içerik panoya kendiliğinden yazılmaz.
+- Tıklayınca panoya kopyalanır. Görseller panoya **her zaman PNG** olarak yazılır; uzun kenarı 4096 pikselden büyükse panoya giden kopya bu boyuta küçültülür (diskteki orijinal değişmez). Gelen içerik panoya kendiliğinden yazılmaz.
 - Diskte saklanır (`~/Library/Application Support/MacClip`, klasör 0700, dosyalar 0600). Görsel telefonun gönderdiği biçimde saklanır.
 - En fazla 20 kayıt, 10 günden eskiler otomatik silinir.
 - Yeni kayıt gelince ikon 5 saniye yanıp söner, sonra üzerinde nokta kalır. Menü açılınca nokta kaybolur. macOS bildirimi yok.

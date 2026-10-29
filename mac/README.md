@@ -39,7 +39,7 @@ MACCLIP_SIGN_IDENTITY="Apple Development: Ad Soyad (XXXXXXXXXX)" ./scripts/build
 
 - Yeni bir şey gelince ikon 5 saniye yanıp söner, sonra köşesinde nokta kalır. Menüyü açınca nokta kaybolur.
 - Son 5 kayıt ana menüde, sonraki 15 kayıt **Daha eski** altında. Sıralama ve saat, telefonda paylaşıldığı zamana göredir.
-- Bir kayda tıklayınca panoya kopyalanır. Görseller her zaman PNG olarak kopyalanır. Üzerine gelince tam tarih görünür.
+- Bir kayda tıklayınca panoya kopyalanır. Görseller her zaman PNG olarak kopyalanır. Uzun kenarı 4096 pikselden büyük fotoğraflar panoya küçültülerek yazılır (50 MP'lik bir fotoğraf ~45 MB yerine ~12 MB olur); diskteki orijinal değişmez. Üzerine gelince tam tarih görünür.
 - En fazla 20 kayıt tutulur. 10 günden eskiler silinir.
 - Menünün altındaki gri satır sunucunun durumunu ve dinlediği adresi gösterir.
 

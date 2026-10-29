@@ -182,6 +182,28 @@ final class HistoryStoreTests: XCTestCase {
         XCTAssertEqual(thumb.width, 10)
     }
 
+    func testLargeImagesAreScaledDownForPasteboardOnly() throws {
+        let store = try makeStore()
+        try store.add(header: header("image", mime: "image/png"), content: try Self.makeImage(type: .png, width: 5000, height: 100))
+        try store.add(header: header("image", mime: "image/png", ageSeconds: 1), content: try Self.makeImage(type: .png, width: 1200, height: 2600))
+        func pngSize(_ item: HistoryItem) throws -> (Int, Int) {
+            let png = try XCTUnwrap(ImageRendering.pngData(contentsOf: store.url(for: item)))
+            let source = try XCTUnwrap(CGImageSourceCreateWithData(png as CFData, nil))
+            let props = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? [CFString: Any])
+            return (props[kCGImagePropertyPixelWidth] as! Int, props[kCGImagePropertyPixelHeight] as! Int)
+        }
+        let (bigW, bigH) = try pngSize(store.items[0])
+        XCTAssertEqual(bigW, 4096)
+        XCTAssertEqual(bigH, 82, accuracy: 1)
+        let (smallW, smallH) = try pngSize(store.items[1])
+        XCTAssertEqual(smallW, 1200)
+        XCTAssertEqual(smallH, 2600)
+        // The original on disk is untouched.
+        let original = try XCTUnwrap(CGImageSourceCreateWithURL(store.url(for: store.items[0]) as CFURL, nil))
+        let originalProps = try XCTUnwrap(CGImageSourceCopyPropertiesAtIndex(original, 0, nil) as? [CFString: Any])
+        XCTAssertEqual(originalProps[kCGImagePropertyPixelWidth] as? Int, 5000)
+    }
+
     static func makeImage(type: UTType, width: Int, height: Int) throws -> Data {
         let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: 0,
                             space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue)!

@@ -3,18 +3,18 @@ import Foundation
 import MacClipCore
 
 let usage = """
-Kullanım: macclip-send [seçenekler] text <metin>
-          macclip-send [seçenekler] image <dosya>
-          macclip-send [seçenekler] ping
+Usage: macclip-send [options] text <text>
+       macclip-send [options] image <file>
+       macclip-send [options] ping
 
-Seçenekler:
-  --host <adres>      Varsayılan 127.0.0.1
-  --port <port>       Varsayılan config.json'daki port
-  --id <uuid>         Kayıt kimliği (tekrar gönderim testi için)
-  --age <saniye>      Paylaşım saatini bu kadar geriye al (eksi değer ileri alır)
-  --key <base64url>   config.json yerine bu anahtarı kullan
+Options:
+  --host <address>    Default 127.0.0.1
+  --port <port>       Default: the port in config.json
+  --id <uuid>         Item ID (to test duplicate sends)
+  --age <seconds>     Move the share time back by this much (negative moves it forward)
+  --key <base64url>   Use this key instead of config.json
 
-Anahtar ve port MACCLIP_HOME (yoksa ~/Library/Application Support/MacClip) içindeki config.json'dan okunur.
+Key and port are read from config.json in MACCLIP_HOME (default ~/Library/Application Support/MacClip).
 """
 
 func fail(_ message: String) -> Never {
@@ -34,7 +34,7 @@ guard let command = args.first else { fail(usage) }
 let config = AppConfig.load(root: Paths.root)
 guard let keyString = options["key"] ?? config?.key,
       let key = AppConfig(key: keyString).symmetricKey
-else { fail("Anahtar bulunamadı. Önce Mac uygulamasını çalıştırın ya da --key verin.") }
+else { fail("No key found. Run the Mac app first or pass --key.") }
 let host = options["host"] ?? "127.0.0.1"
 let port = options["port"] ?? String(config?.port ?? AppConfig.defaultPort)
 let age = Double(options["age"] ?? "0") ?? 0
@@ -53,7 +53,7 @@ case "text":
 case "image":
     guard args.count >= 2 else { fail(usage) }
     let url = URL(fileURLWithPath: args[1])
-    guard let data = try? Data(contentsOf: url) else { fail("Dosya okunamadı: \(args[1])") }
+    guard let data = try? Data(contentsOf: url) else { fail("Couldn't read the file: \(args[1])") }
     let mimes = ["png": "image/png", "jpg": "image/jpeg", "jpeg": "image/jpeg", "heic": "image/heic",
                  "webp": "image/webp", "gif": "image/gif"]
     path = "/v1/items"

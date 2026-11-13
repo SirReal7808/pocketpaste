@@ -25,7 +25,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             store = try HistoryStore(root: root)
         } catch {
-            fatal("Kayıt klasörü açılamadı: \(error.localizedDescription)")
+            fatal(L("Couldn’t open the data folder: %@", error.localizedDescription))
         }
 
         var firstRun = false
@@ -34,7 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             config = AppConfig(key: AppConfig.newKey())
             firstRun = true
-            do { try config.save(root: root) } catch { fatal("Ayarlar kaydedilemedi: \(error.localizedDescription)") }
+            do { try config.save(root: root) } catch { fatal(L("Couldn’t save the settings: %@", error.localizedDescription)) }
         }
         keyBox.set(config.symmetricKey!)
 
@@ -65,23 +65,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             try server.start(service: service)
             self.server = server
         } catch {
-            status.serverStatus = "Sunucu başlatılamadı: \(error.localizedDescription)"
+            status.serverStatus = L("Couldn’t start the server: %@", error.localizedDescription)
         }
     }
 
     private func listenerChanged(_ state: NWListener.State, port: UInt16) {
         switch state {
         case .ready:
-            let address = NetworkInfo.ipv4Addresses().first?.address ?? "ağ yok"
-            status.serverStatus = "Dinleniyor · \(address):\(port)"
+            let address = NetworkInfo.ipv4Addresses().first?.address ?? L("no network")
+            status.serverStatus = L("Listening · %@", "\(address):\(port)")
         case .failed(let error):
             if case .posix(.EADDRINUSE) = error {
-                status.serverStatus = "Port \(port) başka bir uygulama tarafından kullanılıyor"
+                status.serverStatus = L("Port %@ is in use by another app", String(port))
             } else {
-                status.serverStatus = "Sunucu hatası: \(error.localizedDescription)"
+                status.serverStatus = L("Server error: %@", error.localizedDescription)
             }
         case .waiting(let error):
-            status.serverStatus = "Ağ bekleniyor: \(error.localizedDescription)"
+            status.serverStatus = L("Waiting for the network: %@", error.localizedDescription)
         default:
             break
         }
@@ -126,10 +126,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func clearHistory() {
         let alert = NSAlert()
-        alert.messageText = "Geçmiş temizlensin mi?"
-        alert.informativeText = "Gelen tüm metin ve görseller silinecek."
-        alert.addButton(withTitle: "Temizle")
-        alert.addButton(withTitle: "Vazgeç")
+        alert.messageText = L("Clear the history?")
+        alert.informativeText = L("All received text and images will be deleted.")
+        alert.addButton(withTitle: L("Clear"))
+        alert.addButton(withTitle: L("Cancel"))
         NSApp.activate(ignoringOtherApps: true)
         if alert.runModal() == .alertFirstButtonReturn {
             store.clear()
@@ -138,16 +138,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func repair() {
         let alert = NSAlert()
-        alert.messageText = "Yeniden eşleştirilsin mi?"
-        alert.informativeText = "Yeni bir anahtar üretilecek. Telefonun yeni QR kodu okutana kadar gönderim yapamaz. Bekleyen kayıtlar telefonda sırada kalır."
-        alert.addButton(withTitle: "Yeniden eşleştir")
-        alert.addButton(withTitle: "Vazgeç")
+        alert.messageText = L("Pair again?")
+        alert.informativeText = L("A new key will be created. The phone can’t send until it scans the new QR code. Items waiting on the phone stay in its queue.")
+        alert.addButton(withTitle: L("Pair Again"))
+        alert.addButton(withTitle: L("Cancel"))
         NSApp.activate(ignoringOtherApps: true)
         guard alert.runModal() == .alertFirstButtonReturn else { return }
 
         config.key = AppConfig.newKey()
         do { try config.save(root: root) } catch {
-            showError("Yeni anahtar kaydedilemedi: \(error.localizedDescription)")
+            showError(L("Couldn’t save the new key: %@", error.localizedDescription))
             return
         }
         keyBox.set(config.symmetricKey!)
@@ -184,7 +184,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 }
             }
         } catch {
-            showError("Girişte başlatma ayarlanamadı: \(error.localizedDescription)\n\nUygulamanın /Applications klasöründen çalıştığından emin olun.")
+            showError(L("Couldn’t set Open at Login: %@\n\nMake sure the app runs from the /Applications folder.", error.localizedDescription))
         }
     }
 

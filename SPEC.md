@@ -1,64 +1,65 @@
-# MacClip: Telefondan Mac'e yerel pano köprüsü
+# MacClip: a local clipboard bridge from phone to Mac
 
-Android'de Paylaş menüsünden seçilen metni veya görseli aynı Wi-Fi'daki Mac'e gönderir. Mac'te menü çubuğundaki listeden bir kayda tıklayınca içerik panoya kopyalanır.
+Sends text or an image chosen in Android's share sheet to a Mac on the same Wi-Fi. On the Mac, clicking an item in the menu bar list copies it to the clipboard.
 
-## Kararlar
+## Decisions
 
-### Genel
-- Yalnızca yerel ağ, yalnızca telefon → Mac, yalnızca metin ve görsel.
-- Taşıma düz HTTP. İçerik, eşleşmede paylaşılan 256-bit anahtarla AES-256-GCM ile şifrelenir. Anahtar ağda hiç dolaşmaz.
-- Tek telefon eşleşir. Yeniden eşleştirme yeni anahtar üretir, eskisi geçersiz olur.
-- Eşleşme Mac'te gösterilen QR koduyla yapılır.
-- Bulma: önce eşleşmedeki IP ve port (statik IP ile en hızlısı), ulaşılamazsa Bonjour (`_macclip._tcp`, TXT `kid` ile doğru Mac seçilir).
+### General
+- Local network only, phone → Mac only, text and images only.
+- Transport is plain HTTP. Content is encrypted with AES-256-GCM using a 256-bit key shared at pairing. The key never travels over the network.
+- One phone is paired. Pairing again creates a new key and the old one stops working.
+- Pairing uses a QR code shown on the Mac.
+- Discovery: first the IP and port from pairing (fastest with a static IP); if unreachable, Bonjour (`_macclip._tcp`, the TXT record `kid` picks the right Mac).
+- User-facing text is English, with a Turkish translation used when the system language is Turkish.
 
-### Mac uygulaması
-- Swift, yalnızca menü çubuğu (Dock'ta yok).
-- Liste: ilk 5 kayıt ana menüde, sonraki 15 kayıt "Daha eski" alt menüsünde. Metin ve görsel tek listede.
-- Sıralama ve gösterilen saat: telefonda **paylaşıldığı** saat (gelme saati değil).
-- Metin: tek satıra indirilmiş, 50 karakterde kısaltılmış.
-- Görsel: küçük önizleme ve "Görsel · SS:DD".
-- Tıklayınca panoya kopyalanır. Görseller panoya **her zaman PNG** olarak yazılır; uzun kenarı 4096 pikselden büyükse panoya giden kopya bu boyuta küçültülür (diskteki orijinal değişmez). Gelen içerik panoya kendiliğinden yazılmaz.
-- Diskte saklanır (`~/Library/Application Support/MacClip`, klasör 0700, dosyalar 0600). Görsel telefonun gönderdiği biçimde saklanır.
-- En fazla 20 kayıt, 10 günden eskiler otomatik silinir.
-- Yeni kayıt gelince ikon 5 saniye yanıp söner, sonra üzerinde nokta kalır. Menü açılınca nokta kaybolur. macOS bildirimi yok.
-- Menüde: Geçmişi temizle, Yeniden eşleştir, Girişte başlat, Çık.
+### Mac app
+- Swift, menu bar only (no Dock icon).
+- List: the first 5 items in the main menu, the next 15 under "Older". Text and images share one list.
+- Order and the time shown: when the item was **shared** on the phone (not when it arrived).
+- Text: collapsed to one line, cut at 50 characters.
+- Image: a small preview and "Image · HH:MM".
+- Clicking copies to the clipboard. Images always go to the clipboard as **PNG**; if the long edge is over 4096 pixels, the clipboard copy is scaled down to that size (the original on disk is unchanged). Incoming content is never written to the clipboard on its own.
+- Stored on disk (`~/Library/Application Support/MacClip`, folder 0700, files 0600). Images are stored in the format the phone sent.
+- At most 20 items; items older than 10 days are deleted automatically.
+- When a new item arrives the icon blinks for 5 seconds, then keeps a dot. Opening the menu clears the dot. No macOS notifications.
+- Menu: Clear History, Pair Again, Open at Login, Quit.
 
-### Android uygulaması
-- Kotlin, APK elle kurulur.
-- Paylaş menüsünde "Mac'e gönder". Birden fazla görsel paylaşılırsa her biri ayrı kayıt olur.
-- Paylaşınca görünmez bir ekran açılır, içerik uygulamanın özel alanındaki sıraya yazılır, yaklaşık 3 saniye hemen gönderim denenir, kısa bir Toast gösterilir ("Gönderildi" veya "Mac'e ulaşılamadı, sıraya alındı") ve ekran kapanır. Son uygulamalar listesinde kalmaz, bildirim gösterilmez, ön planda servis çalışmaz.
-- Gönderilemeyenler WorkManager ile Wi-Fi varken arka planda tekrar denenir (birkaç dakika ile ~15 dakika gecikme olabilir).
-- Telefondaki sıra: en fazla 20 kayıt, 10 günden eskiler silinir.
-- Ayar ekranı: QR okutma, manuel giriş, bağlantı testi, bekleyen sayısı ve "Şimdi gönder".
+### Android app
+- Kotlin, APK installed by hand (no Play Store).
+- "Send to Mac" in the share sheet. When several images are shared, each becomes its own item.
+- Sharing opens an invisible screen: the content is written to a queue in the app's private storage, sending is tried right away for about 3 seconds, a short Toast is shown ("Sent" or "Can't reach the Mac, queued") and the screen closes. It does not stay in Recents, shows no notification and runs no foreground service.
+- Items not sent are retried in the background by WorkManager while on Wi-Fi (a delay of a few minutes up to ~15 minutes is possible).
+- Queue on the phone: at most 20 items; items older than 10 days are deleted.
+- Settings screen: QR scan, manual entry, connection test, number of waiting items and "Send now".
 
-## Protokol (v1)
+## Protocol (v1)
 
-### Eşleşme QR içeriği
+### Pairing QR content
 ```
-macclip://pair?v=1&h=<ipv4>&p=<port>&k=<base64url anahtar, 32 bayt>&n=<Mac adı>
+macclip://pair?v=1&h=<ipv4>&p=<port>&k=<base64url key, 32 bytes>&n=<Mac name>
 ```
 
-### İstekler
-Tek uç nokta türü, gövde ikili (binary):
+### Requests
+One kind of endpoint, binary body:
 
-- `POST /v1/items`: kayıt gönderir.
-- `POST /v1/ping`: bağlantı ve anahtar testi.
+- `POST /v1/items`: sends an item.
+- `POST /v1/ping`: connection and key test.
 
-Gövde: `nonce (12 bayt) || AES-256-GCM şifreli metin || etiket (16 bayt)`. AAD: istek yolu (`/v1/items` veya `/v1/ping`).
+Body: `nonce (12 bytes) || AES-256-GCM ciphertext || tag (16 bytes)`. AAD: the request path (`/v1/items` or `/v1/ping`).
 
-Şifresi çözülmüş içerik:
+Decrypted content:
 ```
-başlık uzunluğu (4 bayt, big-endian) || başlık JSON (UTF-8) || ham içerik baytları
+header length (4 bytes, big-endian) || header JSON (UTF-8) || raw content bytes
 ```
-Başlık JSON:
+Header JSON:
 ```json
 {"id": "<UUID>", "type": "text" | "image" | "ping", "mime": "text/plain" | "image/png" | ..., "sentAt": <epoch ms>}
 ```
 
-### Yanıtlar
-- `200` kabul edildi (aynı `id` daha önce geldiyse de `200`, tekrar eklenmez).
-- `400` bozuk istek, `401` şifre çözülemedi (yanlış anahtar), `404` bilinmeyen yol, `413` çok büyük, `422` desteklenmeyen tür veya süresi geçmiş (`sentAt` 10 günden eski ya da 5 dakikadan fazla ileride).
+### Responses
+- `200` accepted (also `200` if the same `id` arrived before; it is not added again).
+- `400` malformed request, `401` decryption failed (wrong key), `404` unknown path, `413` too large, `422` unsupported type or expired (`sentAt` older than 10 days or more than 5 minutes in the future).
 
-### Sınırlar
-- Gövde en fazla 30 MB, metin en fazla 1 MB.
-- Mac, gördüğü `id`'leri 11 gün saklar. Tekrar gönderim koruması bu kimliklere dayanır.
+### Limits
+- Body at most 30 MB, text at most 1 MB.
+- The Mac keeps the `id`s it has seen for 11 days. Replay protection relies on these IDs.

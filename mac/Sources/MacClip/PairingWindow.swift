@@ -1,15 +1,16 @@
 import AppKit
 import CoreImage
+import MacClipCore
 
 final class PairingWindowController: NSWindowController {
     init(pairingURL: String, addresses: [String], port: UInt16, key: String, name: String) {
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 380, height: 520),
                               styleMask: [.titled, .closable], backing: .buffered, defer: false)
-        window.title = "MacClip · Eşleştir"
+        window.title = "MacClip · " + L("Pair")
         window.isReleasedWhenClosed = false
         super.init(window: window)
 
-        let title = NSTextField(labelWithString: "Telefondaki MacClip uygulamasıyla bu kodu okutun")
+        let title = NSTextField(labelWithString: L("Scan this code with the MacClip app on your phone"))
         title.font = .boldSystemFont(ofSize: 13)
         title.alignment = .center
 
@@ -19,22 +20,22 @@ final class PairingWindowController: NSWindowController {
         qr.widthAnchor.constraint(equalToConstant: 260).isActive = true
         qr.heightAnchor.constraint(equalToConstant: 260).isActive = true
 
-        let addressText = addresses.isEmpty ? "bulunamadı (ağa bağlı mı?)" : addresses.joined(separator: ", ")
+        let addressText = addresses.isEmpty ? L("not found (connected to a network?)") : addresses.joined(separator: ", ")
         let details = NSTextField(wrappingLabelWithString: """
-            Elle giriş için:
+            \(L("For manual entry:"))
             Mac: \(name)
-            Adres: \(addressText)
+            \(L("Address:")) \(addressText)
             Port: \(port)
-            Anahtar: \(key)
+            \(L("Key:")) \(key)
             """)
         details.font = .monospacedSystemFont(ofSize: 11, weight: .regular)
         details.isSelectable = true
 
-        let note = NSTextField(wrappingLabelWithString: "Bu anahtarı kimseyle paylaşmayın. Yeniden eşleştirince eski anahtar geçersiz olur.")
+        let note = NSTextField(wrappingLabelWithString: L("Don’t share this key with anyone. Pairing again makes the old key invalid."))
         note.font = .systemFont(ofSize: 11)
         note.textColor = .secondaryLabelColor
 
-        let close = NSButton(title: "Kapat", target: nil, action: #selector(NSWindow.performClose(_:)))
+        let close = NSButton(title: L("Close"), target: nil, action: #selector(NSWindow.performClose(_:)))
         close.keyEquivalent = "\r"
 
         let stack = NSStackView(views: [title, qr, details, note, close])

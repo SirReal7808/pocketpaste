@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>tr</string>
+	</array>
 	<key>CFBundleIdentifier</key>
 	<string>dev.macclip.MacClip</string>
 	<key>CFBundleName</key>
@@ -21,7 +28,7 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>MacClip, aynı Wi-Fi'daki telefonunuzdan gelen metin ve görselleri almak için yerel ağı kullanır.</string>
+	<string>MacClip uses the local network to receive text and images from your phone on the same Wi-Fi.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_macclip._tcp</string>

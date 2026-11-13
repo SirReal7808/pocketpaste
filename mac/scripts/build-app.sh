@@ -12,8 +12,15 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN/MacClip" "$APP/Contents/MacOS/MacClip"
 cp Resources/Info.plist "$APP/Contents/Info.plist"
+cp -R Resources/*.lproj "$APP/Contents/Resources/"
 cp "$BIN/macclip-send" build/macclip-send
 
-codesign --force --options runtime --sign "${MACCLIP_SIGN_IDENTITY:--}" "$APP"
-echo "Hazır: $PWD/$APP"
-echo "Test aracı: $PWD/build/macclip-send"
+IDENTITY="${MACCLIP_SIGN_IDENTITY:--}"
+if [[ "$IDENTITY" == "-" ]]; then
+    codesign --force --options runtime --sign - "$APP"
+else
+    # A secure timestamp is required for notarization.
+    codesign --force --options runtime --timestamp --sign "$IDENTITY" "$APP"
+fi
+echo "Built: $PWD/$APP"
+echo "Test sender: $PWD/build/macclip-send"

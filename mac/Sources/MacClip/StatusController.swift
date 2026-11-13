@@ -8,7 +8,7 @@ final class StatusController: NSObject, NSMenuDelegate {
     private static let blinkDuration: TimeInterval = 5
     private static let thumbnailPoints: CGFloat = 28
 
-    var serverStatus = "Başlatılıyor…"
+    var serverStatus = L("Starting…")
 
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
     private let menu = NSMenu()
@@ -70,7 +70,7 @@ final class StatusController: NSObject, NSMenuDelegate {
 
         menu.removeAllItems()
         if items.isEmpty {
-            let empty = NSMenuItem(title: "Henüz bir şey gelmedi", action: nil, keyEquivalent: "")
+            let empty = NSMenuItem(title: L("Nothing received yet"), action: nil, keyEquivalent: "")
             empty.isEnabled = false
             menu.addItem(empty)
         }
@@ -78,7 +78,7 @@ final class StatusController: NSObject, NSMenuDelegate {
             menu.addItem(menuItem(for: item))
         }
         if items.count > Self.mainMenuCount {
-            let older = NSMenuItem(title: "Daha eski", action: nil, keyEquivalent: "")
+            let older = NSMenuItem(title: L("Older"), action: nil, keyEquivalent: "")
             let submenu = NSMenu()
             submenu.autoenablesItems = false
             for item in items.dropFirst(Self.mainMenuCount).prefix(Self.olderCount) {
@@ -89,11 +89,11 @@ final class StatusController: NSObject, NSMenuDelegate {
         }
 
         menu.addItem(.separator())
-        let clear = action("Geçmişi temizle", #selector(clearHistory))
+        let clear = action(L("Clear History"), #selector(clearHistory))
         clear.isEnabled = !items.isEmpty
         menu.addItem(clear)
-        menu.addItem(action("Yeniden eşleştir…", #selector(repair)))
-        let login = action("Girişte başlat", #selector(toggleLogin))
+        menu.addItem(action(L("Pair Again…"), #selector(repair)))
+        let login = action(L("Open at Login"), #selector(toggleLogin))
         login.state = app.launchAtLogin ? .on : .off
         menu.addItem(login)
 
@@ -105,7 +105,7 @@ final class StatusController: NSObject, NSMenuDelegate {
         ])
         info.isEnabled = false
         menu.addItem(info)
-        menu.addItem(action("Çık", #selector(quit), key: "q"))
+        menu.addItem(action(L("Quit MacClip"), #selector(quit), key: "q"))
     }
 
     private func menuItem(for item: HistoryItem) -> NSMenuItem {

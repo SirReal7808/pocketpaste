@@ -26,7 +26,6 @@ final class StatusController: NSObject, NSMenuDelegate {
         self.app = app
         super.init()
         statusItem.button?.image = plainIcon
-        statusItem.button?.toolTip = "MacClip"
         menu.delegate = self
         menu.autoenablesItems = false
         statusItem.menu = menu

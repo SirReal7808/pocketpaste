@@ -10,7 +10,7 @@ Share text or an image on your Android phone, click it in your Mac's menu bar, a
 
 From [Releases](../../releases):
 
-- `MacClip-<version>-mac.zip`: the Mac app (macOS 13+), signed with a Developer ID and notarized.
+- `MacClip-<version>-mac.zip`: the Mac app (macOS 13+). It is not notarized, so macOS asks you to confirm the first launch ([how](mac/README.md#install)).
 - `MacClip-<version>.apk`: the Android app (Android 8.0+), installed by hand.
 
 Then open MacClip on the Mac, scan the QR code it shows with the Android app, and share something. Details: [Mac app](mac/README.md) · [Android app](android/README.md).

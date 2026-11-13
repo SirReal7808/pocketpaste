@@ -6,7 +6,15 @@ Requires macOS 13 or later. Building requires Xcode (or the Xcode Command Line T
 
 ## Install
 
-Download `MacClip-<version>-mac.zip` from [Releases](../../../releases), unzip it, move `MacClip.app` to `/Applications` and open it. The release build is signed with a Developer ID and notarized by Apple.
+Download `MacClip-<version>-mac.zip` from [Releases](../../../releases), unzip it and move `MacClip.app` to `/Applications`.
+
+The app is not notarized by Apple, so the first time you open it macOS says it can't verify the developer:
+
+1. Open `MacClip.app` and close the warning.
+2. Go to System Settings › Privacy & Security, scroll down and choose **Open Anyway** next to MacClip.
+3. Confirm. From then on it opens normally.
+
+If you prefer, build it yourself from source (below).
 
 "Open at Login" only works properly while the app runs from `/Applications`.
 
@@ -33,7 +41,7 @@ security find-identity -p codesigning -v
 MACCLIP_SIGN_IDENTITY="Apple Development: Your Name (XXXXXXXXXX)" ./scripts/build-app.sh
 ```
 
-Making a notarized release zip: [`../RELEASING.md`](../RELEASING.md).
+Making a release zip: [`../RELEASING.md`](../RELEASING.md).
 
 ## First launch and permissions
 

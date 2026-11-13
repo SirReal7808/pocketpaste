@@ -9,16 +9,16 @@ Bump both apps to the same version:
 - Mac: `CFBundleShortVersionString` and `CFBundleVersion` in `mac/Resources/Info.plist`.
 - Android: `versionName` and `versionCode` in `android/app/build.gradle.kts`.
 
-## Mac: signed and notarized zip
-
-Needs a **Developer ID Application** certificate in the login keychain and a `notarytool` keychain profile (created once with `xcrun notarytool store-credentials <profile> --apple-id <Apple ID> --team-id <team ID>` and an app-specific password).
+## Mac: unsigned zip
 
 ```bash
 cd mac
-MACCLIP_NOTARY_PROFILE=<profile> scripts/package-release.sh
+scripts/package-release.sh
 ```
 
-The script builds `MacClip.app`, signs it with the first Developer ID identity in the keychain (or `MACCLIP_SIGN_IDENTITY`) with the hardened runtime and a secure timestamp, notarizes and staples it, checks it with `spctl`, and writes `build/release/MacClip-<version>-mac.zip`. `--skip-notarize` is a dry run that only signs and zips.
+The script builds `MacClip.app` with an ad hoc signature and writes `build/release/MacClip-<version>-mac.zip`.
+
+The release is deliberately **not** signed with a Developer ID or notarized, so it stays independent of any Apple developer account. Users confirm the first launch once in System Settings (see the Mac README).
 
 ## Android: signed APK
 

@@ -52,37 +52,36 @@ class MainActivity : Activity() {
         }, top = 0)
         status = TextView(this)
         add(status)
-        add(button("QR kodu okut") { scan() }, top = 16)
+        add(button(getString(R.string.scan_qr)) { scan() }, top = 16)
 
-        add(heading("Elle giriş"), top = 28)
+        add(heading(getString(R.string.manual_heading)), top = 28)
         host = EditText(this).apply {
-            hint = "Mac IP adresi (ör. 192.168.1.10)"
+            hint = getString(R.string.host_hint)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
         }
         add(host)
         port = EditText(this).apply {
-            hint = "Port"
+            hint = getString(R.string.port_hint)
             inputType = InputType.TYPE_CLASS_NUMBER
         }
         add(port)
         key = EditText(this).apply {
-            hint = "Anahtar"
+            hint = getString(R.string.key_hint)
             inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
         }
         add(key)
-        add(button("Kaydet") { saveManual() })
+        add(button(getString(R.string.save)) { saveManual() })
 
-        add(heading("Bağlantı"), top = 28)
-        add(button("Bağlantıyı test et") { test() })
+        add(heading(getString(R.string.connection_heading)), top = 28)
+        add(button(getString(R.string.test_connection)) { test() })
         result = TextView(this)
         add(result)
         pending = TextView(this)
         add(pending, top = 16)
-        add(button("Şimdi gönder") { sendNow() })
+        add(button(getString(R.string.send_now)) { sendNow() })
 
         add(TextView(this).apply {
-            text = "Kullanım: herhangi bir uygulamada metin veya görseli paylaşıp \"Mac'e gönder\"i seçin. " +
-                "Mac'e ulaşılamazsa öğe sıraya alınır ve Wi-Fi'dayken yaklaşık 15 dakikada bir yeniden denenir."
+            text = getString(R.string.usage)
             alpha = 0.7f
         }, top = 28)
 
@@ -111,11 +110,11 @@ class MainActivity : Activity() {
     private fun showPairing() {
         val pairing = Graph.pairing(this)
         if (pairing == null) {
-            status.text = "Eşleşmemiş. Mac'teki MacClip menüsünden \"Yeniden eşleştir…\" ile QR kodunu açıp okutun."
+            status.text = getString(R.string.not_paired)
             port.setText(DEFAULT_PORT.toString())
             return
         }
-        status.text = "Eşleşmiş: ${pairing.name} (${pairing.host.ifEmpty { "adres yok, Bonjour" }}:${pairing.port})"
+        status.text = getString(R.string.paired, pairing.name, pairing.host.ifEmpty { getString(R.string.no_address_bonjour) }, pairing.port)
         host.setText(pairing.host)
         port.setText(pairing.port.toString())
         key.setText(pairing.key)
@@ -127,19 +126,19 @@ class MainActivity : Activity() {
             .addOnSuccessListener { barcode ->
                 val pairing = barcode.rawValue?.let(Pairing::parse)
                 if (pairing == null) {
-                    result.text = "Bu bir MacClip eşleşme kodu değil."
+                    result.text = getString(R.string.not_a_pairing_code)
                 } else {
                     paired(pairing)
                 }
             }
-            .addOnFailureListener { result.text = "QR okunamadı: ${it.message}. Elle girişi kullanabilirsiniz." }
+            .addOnFailureListener { result.text = getString(R.string.scan_failed, it.message) }
     }
 
     private fun saveManual() {
         val existingName = Graph.pairing(this)?.name ?: "Mac"
         val pairing = Pairing.create(host.text.toString(), port.text.toString(), key.text.toString(), existingName)
         if (pairing == null) {
-            result.text = "Port veya anahtar geçersiz. Anahtar, Mac'teki eşleşme penceresinde yazan 43 karakterlik metindir."
+            result.text = getString(R.string.invalid_manual)
             return
         }
         paired(pairing)
@@ -153,10 +152,10 @@ class MainActivity : Activity() {
 
     private fun test() {
         val pairing = Graph.pairing(this) ?: run {
-            result.text = "Önce eşleştirin."
+            result.text = getString(R.string.pair_first)
             return
         }
-        result.text = "Deneniyor…"
+        result.text = getString(R.string.testing)
         background {
             val r = Graph.sender(this, pairing).ping()
             // Manual entry doesn't know the Mac's name; take it from the reply.
@@ -166,10 +165,10 @@ class MainActivity : Activity() {
                 ui { showPairing() }
             }
             val text = when {
-                r.status == 200 -> "Bağlantı başarılı ✓"
-                r.status == 401 -> "Mac'e ulaşıldı ama anahtar uyuşmuyor. QR kodunu yeniden okutun."
-                r.reachable -> "Mac'e ulaşıldı ama beklenmeyen yanıt: ${r.status}"
-                else -> "Mac'e ulaşılamadı. Aynı Wi-Fi'da mısınız, MacClip açık mı?\n(${r.body})"
+                r.status == 200 -> getString(R.string.test_ok)
+                r.status == 401 -> getString(R.string.test_wrong_key)
+                r.reachable -> getString(R.string.test_unexpected, r.status)
+                else -> getString(R.string.test_unreachable, r.body)
             }
             ui { result.text = text }
         }
@@ -177,17 +176,18 @@ class MainActivity : Activity() {
 
     private fun sendNow() {
         val pairing = Graph.pairing(this) ?: run {
-            result.text = "Önce eşleştirin."
+            result.text = getString(R.string.pair_first)
             return
         }
-        result.text = "Gönderiliyor…"
+        result.text = getString(R.string.sending)
         background {
             val report = Graph.sender(this, pairing).flush()
             if (report.remaining == 0) Retry.cancel(this)
             val text = when (report.problem) {
-                null -> "${report.sent} öğe gönderildi" + if (report.rejected > 0) ", ${report.rejected} öğe Mac tarafından reddedildi" else ""
-                Sender.Problem.UNAUTHORIZED -> "Anahtar uyuşmuyor. QR kodunu yeniden okutun."
-                Sender.Problem.UNREACHABLE -> "Mac'e ulaşılamadı. ${report.sent} öğe gönderildi, ${report.remaining} öğe bekliyor."
+                null -> plural(R.plurals.sent_count, report.sent) +
+                    if (report.rejected > 0) plural(R.plurals.rejected_suffix, report.rejected) else ""
+                Sender.Problem.UNAUTHORIZED -> getString(R.string.wrong_key)
+                Sender.Problem.UNREACHABLE -> getString(R.string.flush_unreachable, report.sent, report.remaining)
             }
             ui {
                 result.text = text
@@ -201,9 +201,11 @@ class MainActivity : Activity() {
             val count = Graph.outbox(this).count()
             // Also refreshes the retry schedule after an app update.
             if (count > 0) Retry.schedule(this)
-            ui { pending.text = if (count == 0) "Bekleyen öğe yok" else "Bekleyen: $count öğe" }
+            ui { pending.text = if (count == 0) getString(R.string.nothing_pending) else plural(R.plurals.pending_count, count) }
         }
     }
+
+    private fun plural(id: Int, count: Int) = resources.getQuantityString(id, count, count)
 
     private fun background(block: () -> Unit) = Thread(block).start()
 

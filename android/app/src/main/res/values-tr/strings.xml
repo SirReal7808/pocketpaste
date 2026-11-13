@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_label">Mac\'e gönder</string>
+
+    <string name="scan_qr">QR kodu okut</string>
+    <string name="manual_heading">Elle giriş</string>
+    <string name="host_hint">Mac IP adresi (ör. 192.168.1.10)</string>
+    <string name="port_hint">Port</string>
+    <string name="key_hint">Anahtar</string>
+    <string name="save">Kaydet</string>
+    <string name="connection_heading">Bağlantı</string>
+    <string name="test_connection">Bağlantıyı test et</string>
+    <string name="send_now">Şimdi gönder</string>
+    <string name="usage">Kullanım: herhangi bir uygulamada metin veya görseli paylaşıp \"Mac\'e gönder\"i seçin. Mac\'e ulaşılamazsa öğe sıraya alınır ve Wi-Fi\'dayken yaklaşık 15 dakikada bir yeniden denenir.</string>
+    <string name="not_paired">Eşleşmemiş. Mac\'teki MacClip menüsünden \"Yeniden eşleştir…\" ile QR kodunu açıp okutun.</string>
+    <string name="paired">Eşleşmiş: %1$s (%2$s:%3$d)</string>
+    <string name="no_address_bonjour">adres yok, Bonjour</string>
+    <string name="not_a_pairing_code">Bu bir MacClip eşleşme kodu değil.</string>
+    <string name="scan_failed">QR okunamadı: %1$s. Elle girişi kullanabilirsiniz.</string>
+    <string name="invalid_manual">Port veya anahtar geçersiz. Anahtar, Mac\'teki eşleşme penceresinde yazan 43 karakterlik metindir.</string>
+    <string name="pair_first">Önce eşleştirin.</string>
+    <string name="testing">Deneniyor…</string>
+    <string name="test_ok">Bağlantı başarılı ✓</string>
+    <string name="test_wrong_key">Mac\'e ulaşıldı ama anahtar uyuşmuyor. QR kodunu yeniden okutun.</string>
+    <string name="test_unexpected">Mac\'e ulaşıldı ama beklenmeyen yanıt: %1$d</string>
+    <string name="test_unreachable">Mac\'e ulaşılamadı. Aynı Wi-Fi\'da mısınız, MacClip açık mı?\n(%1$s)</string>
+    <string name="sending">Gönderiliyor…</string>
+    <plurals name="sent_count">
+        <item quantity="one">%d öğe gönderildi</item>
+        <item quantity="other">%d öğe gönderildi</item>
+    </plurals>
+    <plurals name="rejected_suffix">
+        <item quantity="one">, %d öğe Mac tarafından reddedildi</item>
+        <item quantity="other">, %d öğe Mac tarafından reddedildi</item>
+    </plurals>
+    <string name="wrong_key">Anahtar uyuşmuyor. QR kodunu yeniden okutun.</string>
+    <string name="flush_unreachable">Mac\'e ulaşılamadı. %1$d öğe gönderildi, %2$d öğe bekliyor.</string>
+    <string name="nothing_pending">Bekleyen öğe yok</string>
+    <plurals name="pending_count">
+        <item quantity="one">Bekleyen: %d öğe</item>
+        <item quantity="other">Bekleyen: %d öğe</item>
+    </plurals>
+
+    <string name="share_failed">Gönderilemedi: %1$s</string>
+    <string name="share_too_large">Çok büyük (görsel en fazla 25 MB)</string>
+    <string name="share_unsupported">Yalnızca metin ve görsel gönderilebilir</string>
+    <string name="share_saved_unpaired">Kaydedildi. Göndermek için MacClip\'i açıp eşleştirin.</string>
+    <plurals name="share_skipped">
+        <item quantity="one">" (%d öğe atlandı)"</item>
+        <item quantity="other">" (%d öğe atlandı)"</item>
+    </plurals>
+    <string name="share_some_rejected">Mac bazı öğeleri kabul etmedi%1$s</string>
+    <string name="share_sent">Gönderildi%1$s</string>
+    <string name="share_wrong_key">Anahtar uyuşmuyor, sıraya alındı. Yeniden eşleştirin.</string>
+    <string name="share_queued">Mac\'e ulaşılamadı, sıraya alındı%1$s</string>
+</resources>

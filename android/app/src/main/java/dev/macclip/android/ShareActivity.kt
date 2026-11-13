@@ -10,7 +10,7 @@ import android.widget.Toast
 import java.io.InputStream
 
 /**
- * Target of "Mac'e gönder" in the share sheet. Has no UI: copies what was shared into the outbox
+ * Target of "Send to Mac" in the share sheet. Has no UI: copies what was shared into the outbox
  * (the share permission ends when this activity does), tries to send for a few seconds, shows a
  * Toast and finishes. Anything not sent is retried later by [OutboxWorker].
  */
@@ -20,7 +20,7 @@ class ShareActivity : Activity() {
         val app = applicationContext
         val shared = intent
         Thread {
-            val message = runCatching { handle(app, shared) }.getOrElse { "Gönderilemedi: ${it.message}" }
+            val message = runCatching { handle(app, shared) }.getOrElse { app.getString(R.string.share_failed, it.message) }
             runOnUiThread {
                 Toast.makeText(app, message, Toast.LENGTH_SHORT).show()
                 finish()
@@ -62,20 +62,21 @@ class ShareActivity : Activity() {
 
         if (added == 0) {
             return when {
-                tooLarge > 0 -> "Çok büyük (görsel en fazla 25 MB)"
-                else -> "Yalnızca metin ve görsel gönderilebilir"
+                tooLarge > 0 -> app.getString(R.string.share_too_large)
+                else -> app.getString(R.string.share_unsupported)
             }
         }
 
-        val pairing = Graph.pairing(app) ?: return "Kaydedildi. Göndermek için MacClip'i açıp eşleştirin."
+        val pairing = Graph.pairing(app) ?: return app.getString(R.string.share_saved_unpaired)
         val report = Graph.sender(app, pairing).flush(deadline = System.currentTimeMillis() + SEND_BUDGET_MS)
         if (report.remaining > 0) Retry.schedule(app)
 
-        val skipped = if (tooLarge + unsupported > 0) " (${tooLarge + unsupported} öğe atlandı)" else ""
+        val skippedCount = tooLarge + unsupported
+        val skipped = if (skippedCount > 0) app.resources.getQuantityString(R.plurals.share_skipped, skippedCount, skippedCount) else ""
         return when (report.problem) {
-            null -> if (report.rejected > 0) "Mac bazı öğeleri kabul etmedi$skipped" else "Gönderildi$skipped"
-            Sender.Problem.UNAUTHORIZED -> "Anahtar uyuşmuyor, sıraya alındı. Yeniden eşleştirin."
-            Sender.Problem.UNREACHABLE -> "Mac'e ulaşılamadı, sıraya alındı$skipped"
+            null -> app.getString(if (report.rejected > 0) R.string.share_some_rejected else R.string.share_sent, skipped)
+            Sender.Problem.UNAUTHORIZED -> app.getString(R.string.share_wrong_key)
+            Sender.Problem.UNREACHABLE -> app.getString(R.string.share_queued, skipped)
         }
     }
 

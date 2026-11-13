@@ -11,12 +11,12 @@ public enum MenuText {
     }
 
     public static func imageTitle(sentAt: Date, timeZone: TimeZone = .current) -> String {
-        "Görsel · " + time(sentAt, timeZone: timeZone)
+        L("Image") + " · " + time(sentAt, timeZone: timeZone)
     }
 
     public static func time(_ date: Date, timeZone: TimeZone = .current) -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "tr_TR")
+        f.locale = Locale(identifier: "en_US_POSIX")
         f.timeZone = timeZone
         f.dateFormat = "HH:mm"
         return f.string(from: date)
@@ -24,8 +24,8 @@ public enum MenuText {
 
     public static func fullDate(_ date: Date) -> String {
         let f = DateFormatter()
-        f.locale = Locale(identifier: "tr_TR")
-        f.dateFormat = "d MMMM yyyy, HH:mm"
+        f.locale = .current
+        f.setLocalizedDateFormatFromTemplate("d MMMM yyyy HH:mm")
         return f.string(from: date)
     }
 }

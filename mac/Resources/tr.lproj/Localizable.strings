@@ -1,0 +1,39 @@
+/* Turkish. Keys are the English text used in code via L(). */
+
+"Image" = "Görsel";
+"Starting…" = "Başlatılıyor…";
+"Nothing received yet" = "Henüz bir şey gelmedi";
+"Older" = "Daha eski";
+"Clear History" = "Geçmişi temizle";
+"Pair Again…" = "Yeniden eşleştir…";
+"Open at Login" = "Girişte başlat";
+"Quit MacClip" = "Çık";
+"Show in Finder" = "Finder'da göster";
+
+"Couldn’t open the data folder: %@" = "Kayıt klasörü açılamadı: %@";
+"Couldn’t save the settings: %@" = "Ayarlar kaydedilemedi: %@";
+"Couldn’t start the server: %@" = "Sunucu başlatılamadı: %@";
+"no network" = "ağ yok";
+"Listening · %@" = "Dinleniyor · %@";
+"Port %@ is in use by another app" = "Port %@ başka bir uygulama tarafından kullanılıyor";
+"Server error: %@" = "Sunucu hatası: %@";
+"Waiting for the network: %@" = "Ağ bekleniyor: %@";
+
+"Clear the history?" = "Geçmiş temizlensin mi?";
+"All received text and images will be deleted." = "Gelen tüm metin ve görseller silinecek.";
+"Clear" = "Temizle";
+"Cancel" = "Vazgeç";
+"Pair again?" = "Yeniden eşleştirilsin mi?";
+"A new key will be created. The phone can’t send until it scans the new QR code. Items waiting on the phone stay in its queue." = "Yeni bir anahtar üretilecek. Telefonun yeni QR kodu okutana kadar gönderim yapamaz. Bekleyen kayıtlar telefonda sırada kalır.";
+"Pair Again" = "Yeniden eşleştir";
+"Couldn’t save the new key: %@" = "Yeni anahtar kaydedilemedi: %@";
+"Couldn’t set Open at Login: %@\n\nMake sure the app runs from the /Applications folder." = "Girişte başlatma ayarlanamadı: %@\n\nUygulamanın /Applications klasöründen çalıştığından emin olun.";
+
+"Pair" = "Eşleştir";
+"Scan this code with the MacClip app on your phone" = "Telefondaki MacClip uygulamasıyla bu kodu okutun";
+"not found (connected to a network?)" = "bulunamadı (ağa bağlı mı?)";
+"For manual entry:" = "Elle giriş için:";
+"Address:" = "Adres:";
+"Key:" = "Anahtar:";
+"Don’t share this key with anyone. Pairing again makes the old key invalid." = "Bu anahtarı kimseyle paylaşmayın. Yeniden eşleştirince eski anahtar geçersiz olur.";
+"Close" = "Kapat";

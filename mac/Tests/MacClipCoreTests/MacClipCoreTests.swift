@@ -228,6 +228,6 @@ final class MenuTextTests: XCTestCase {
 
     func testImageTitle() {
         let date = Date(timeIntervalSince1970: 7 * 3600 + 48 * 60)
-        XCTAssertEqual(MenuText.imageTitle(sentAt: date, timeZone: TimeZone(identifier: "UTC")!), "Görsel · 07:48")
+        XCTAssertEqual(MenuText.imageTitle(sentAt: date, timeZone: TimeZone(identifier: "UTC")!), "Image · 07:48")
     }
 }

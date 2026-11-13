@@ -1,4 +1,5 @@
 import AppKit
+import MacClipCore
 
 /// Menu row for an image: thumbnail, title, and a folder button on the right that reveals the file in Finder.
 /// Clicking anywhere else copies, like a normal menu item. A view-based menu item draws its own highlight.
@@ -13,7 +14,7 @@ final class ImageRowView: NSView {
     private let title: String
     private let onCopy: () -> Void
     private let onReveal: () -> Void
-    private let folderIcon = NSImage(systemSymbolName: "folder", accessibilityDescription: "Finder'da göster")?
+    private let folderIcon = NSImage(systemSymbolName: "folder", accessibilityDescription: L("Show in Finder"))?
         .withSymbolConfiguration(NSImage.SymbolConfiguration(pointSize: 13, weight: .regular))
     private var hoveringButton = false {
         didSet { if hoveringButton != oldValue { needsDisplay = true } }

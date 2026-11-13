@@ -1,119 +1,127 @@
-# MacClip · Mac uygulaması
+# MacClip · Mac app
 
-Telefondan gelen metin ve görselleri menü çubuğunda listeler. Bir kayda tıklayınca içerik panoya kopyalanır. Protokol ve kararlar için `../SPEC.md`.
+Lists the text and images sent from your phone in the menu bar. Click an item to copy it to the clipboard. Protocol and design decisions: [`../SPEC.md`](../SPEC.md).
 
-Gereksinim: macOS 13 veya üstü, Xcode (veya Xcode Command Line Tools).
+Requires macOS 13 or later. Building requires Xcode (or the Xcode Command Line Tools).
 
-## Derleme ve kurulum
+## Install
+
+Download `MacClip-<version>-mac.zip` from [Releases](../../../releases), unzip it, move `MacClip.app` to `/Applications` and open it. The release build is signed with a Developer ID and notarized by Apple.
+
+"Open at Login" only works properly while the app runs from `/Applications`.
+
+## Build
 
 ```bash
 ./scripts/build-app.sh
 ```
 
-Çıktılar:
-- `build/MacClip.app`: uygulama
-- `build/macclip-send`: telefon olmadan test için gönderici
-
-Uygulamayı `/Applications` klasörüne taşıyın ve açın. "Girişte başlat" yalnızca uygulama oradan çalışırken düzgün çalışır.
+Outputs:
+- `build/MacClip.app`: the app
+- `build/macclip-send`: a sender for testing without a phone
 
 ```bash
 cp -R build/MacClip.app /Applications/ && open /Applications/MacClip.app
 ```
 
-### İmzalama
+### Signing
 
-Betik varsayılan olarak ad hoc imza kullanır. Bu durumda macOS, her yeniden derlemeden sonra güvenlik duvarı ve yerel ağ iznini tekrar sorabilir. Apple geliştirici sertifikanız varsa bunu kullanın, izinler kalıcı olur:
+The script signs ad hoc by default. macOS may then ask again for the firewall and local network permissions after every rebuild. If you have an Apple developer certificate, use it and the permissions stick:
 
 ```bash
 security find-identity -p codesigning -v
-MACCLIP_SIGN_IDENTITY="Apple Development: Ad Soyad (XXXXXXXXXX)" ./scripts/build-app.sh
+MACCLIP_SIGN_IDENTITY="Apple Development: Your Name (XXXXXXXXXX)" ./scripts/build-app.sh
 ```
 
-## İlk açılış ve izinler
+Making a notarized release zip: [`../RELEASING.md`](../RELEASING.md).
 
-1. **Eşleştirme penceresi:** İlk açılışta QR kodu otomatik açılır. Telefondaki MacClip ayar ekranından okutun. Daha sonra menüden **Yeniden eşleştir…** ile tekrar açabilirsiniz. Bu işlem yeni anahtar üretir, eski anahtar geçersiz olur.
-2. **Gelen bağlantılar:** macOS güvenlik duvarı açıksa "MacClip'in gelen ağ bağlantılarını kabul etmesine izin verilsin mi?" diye sorar. **İzin Ver** deyin.
-3. **Yerel ağ:** Sorulursa izin verin. Sonradan değiştirmek için: Sistem Ayarları › Gizlilik ve Güvenlik › Yerel Ağ › MacClip.
+## First launch and permissions
 
-## Kullanım
+1. **Pairing window:** on first launch the QR code opens automatically. Scan it from the settings screen of the MacClip Android app. You can open it again later with **Pair Again…** in the menu. This creates a new key; the old one stops working.
+2. **Incoming connections:** if the macOS firewall is on, it asks whether MacClip may accept incoming network connections. Choose **Allow**.
+3. **Local network:** allow it if asked. To change it later: System Settings › Privacy & Security › Local Network › MacClip.
 
-- Yeni bir şey gelince ikon 5 saniye yanıp söner, sonra köşesinde nokta kalır. Menüyü açınca nokta kaybolur.
-- Son 5 kayıt ana menüde, sonraki 15 kayıt **Daha eski** altında. Sıralama ve saat, telefonda paylaşıldığı zamana göredir.
-- Bir kayda tıklayınca panoya kopyalanır. Görseller her zaman PNG olarak kopyalanır. Uzun kenarı 4096 pikselden büyük fotoğraflar panoya küçültülerek yazılır (50 MP'lik bir fotoğraf ~45 MB yerine ~12 MB olur); diskteki orijinal değişmez. Üzerine gelince tam tarih görünür.
-- Görsel satırlarının sağındaki klasör düğmesi dosyayı Finder'da gösterir.
-- En fazla 20 kayıt tutulur. 10 günden eskiler silinir.
-- Menünün altındaki gri satır sunucunun durumunu ve dinlediği adresi gösterir.
+## Usage
 
-Veriler `~/Library/Application Support/MacClip` klasöründe durur. Klasör `0700`, dosyalar `0600` izinlidir, yani yalnızca sizin kullanıcınız erişebilir.
+- When something new arrives the icon blinks for 5 seconds, then keeps a dot in its corner. Opening the menu clears the dot.
+- The latest 5 items are in the main menu, the next 15 under **Older**. Order and times follow when the item was shared on the phone.
+- Click an item to copy it to the clipboard. Images are always copied as PNG. Photos whose long edge is over 4096 pixels are scaled down for the clipboard (a 50 MP photo becomes ~12 MB instead of ~45 MB); the original on disk is unchanged. Hover to see the full date.
+- The folder button on the right of an image row shows the file in Finder.
+- At most 20 items are kept. Items older than 10 days are deleted.
+- The grey line at the bottom of the menu shows the server status and the address it listens on.
 
-| Dosya | İçerik |
+The menu is in English, or in Turkish when that is your system language.
+
+Data lives in `~/Library/Application Support/MacClip`. The folder is `0700` and the files `0600`, so only your user can read them.
+
+| File | Contents |
 |---|---|
-| `config.json` | Anahtar ve port (varsayılan 47812) |
-| `history.json` | Kayıt listesi |
-| `items/` | Metin ve görseller (görseller telefonun gönderdiği biçimde) |
-| `seen.json` | Daha önce gelen kayıt kimlikleri (tekrar gönderimi engellemek için) |
+| `config.json` | Key and port (default 47812) |
+| `history.json` | Item list |
+| `items/` | Text and images (images in the format the phone sent) |
+| `seen.json` | IDs of items already received (to reject replays) |
 
-## Telefon olmadan test
+## Testing without a phone
 
-`macclip-send`, anahtarı aynı `config.json` dosyasından okur ve Android uygulamasının yaptığı gibi şifreli istek gönderir:
+`macclip-send` reads the key from the same `config.json` and sends encrypted requests the way the Android app does:
 
 ```bash
 build/macclip-send ping
 ```
 
 ```bash
-build/macclip-send text "Merhaba Mac"
+build/macclip-send text "Hello Mac"
 ```
 
 ```bash
-build/macclip-send image ~/Desktop/ekran.jpg
+build/macclip-send image ~/Desktop/screenshot.jpg
 ```
 
 ```bash
-build/macclip-send --age 3600 text "bir saat önce paylaşılmış gibi"
+build/macclip-send --age 3600 text "as if shared an hour ago"
 ```
 
-Uygulamanın gerçek verisine dokunmadan denemek için `MACCLIP_HOME` ile ayrı bir klasör kullanılabilir. Gerçek uygulamayla çakışmasın diye o klasördeki `config.json` içinde farklı bir port verin:
+To try things without touching the app's real data, point `MACCLIP_HOME` at a separate folder. Give that folder's `config.json` a different port so it doesn't clash with the running app:
 
 ```bash
 MACCLIP_HOME=/tmp/macclip-test build/MacClip.app/Contents/MacOS/MacClip
 ```
 
 ```bash
-MACCLIP_HOME=/tmp/macclip-test build/macclip-send text "deneme"
+MACCLIP_HOME=/tmp/macclip-test build/macclip-send text "test"
 ```
 
-Birim testleri:
+Unit tests:
 
 ```bash
 swift test
 ```
 
-## Sorun giderme
+## Troubleshooting
 
-**Telefon "Mac'e ulaşılamadı" diyor**
-1. Menünün altındaki gri satıra bakın. "Dinleniyor · 192.168.x.x:47812" yazmalı.
-2. Mac'te `build/macclip-send ping` çalıştırın. `200` dönüyorsa uygulama sağlam, sorun ağdadır.
-3. Telefonun tarayıcısında `http://<Mac IP>:47812/` adresini açın. `{"error":"method"}` görünüyorsa bağlantı var demektir. Sayfa açılmıyorsa güvenlik duvarına bakın: Sistem Ayarları › Ağ › Güvenlik Duvarı › Seçenekler › MacClip "Gelen bağlantılara izin ver" olmalı.
-4. Telefon ile Mac aynı Wi-Fi'da mı? Misafir ağları cihazların birbirini görmesini genelde engeller.
+**The phone says "Can't reach the Mac"**
+1. Look at the grey line at the bottom of the menu. It should read "Listening · 192.168.x.x:47812".
+2. Run `build/macclip-send ping` on the Mac. If it returns `200`, the app is fine and the problem is the network.
+3. Open `http://<Mac IP>:47812/` in the phone's browser. If you see `{"error":"method"}`, the connection works. If the page doesn't load, check the firewall: System Settings › Network › Firewall › Options › MacClip should be "Allow incoming connections".
+4. Are the phone and the Mac on the same Wi-Fi? Guest networks usually stop devices from seeing each other.
 
-**Bonjour (mDNS) çalışmıyor**
-Mac'te duyurunun yapıldığını kontrol edin (Ctrl-C ile çıkın):
+**Bonjour (mDNS) doesn't work**
+Check that the Mac is advertising (quit with Ctrl-C):
 
 ```bash
 dns-sd -B _macclip._tcp
 ```
 
-Satırda Mac adınız görünüyorsa Mac tarafı tamamdır. Bazı modemler ve mesh sistemleri multicast trafiği engeller. Bu durumda telefon QR'daki IP adresine düşer. Statik IP kullanıyorsanız ek bir şey yapmanıza gerek yok. IP değiştiyse yeniden eşleştirin ya da telefonda adresi elle girin.
+If your Mac's name shows up, the Mac side is fine. Some routers and mesh systems block multicast. The phone then falls back to the IP address from the QR code. With a static IP you don't need anything else. If the IP changed, pair again or enter the address by hand on the phone.
 
-**"Port 47812 başka bir uygulama tarafından kullanılıyor"**
-Uygulamadan çıkın, `config.json` içindeki `port` değerini değiştirin, uygulamayı açın ve yeniden eşleştirin.
+**"Port 47812 is in use by another app"**
+Quit the app, change `port` in `config.json`, open the app and pair again.
 
 **`401 unauthorized`**
-Telefondaki anahtar Mac'tekiyle uyuşmuyor. Menüden **Yeniden eşleştir…** deyip QR'ı tekrar okutun.
+The phone's key doesn't match the Mac's. Choose **Pair Again…** in the menu and scan the QR code again.
 
-**Her şeyi sıfırlamak**
-Uygulamadan çıkın, sonra:
+**Resetting everything**
+Quit the app, then:
 
 ```bash
 rm -rf ~/Library/Application\ Support/MacClip

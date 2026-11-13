@@ -1,12 +1,20 @@
-# MacClip · Android uygulaması
+# MacClip · Android app
 
-Paylaş menüsüne "Mac'e gönder" ekler. Seçilen metni veya görselleri aynı Wi-Fi'daki Mac'e şifreli olarak gönderir. Mac'e ulaşamazsa sıraya alır ve sonra kendisi dener. Protokol ve kararlar için `../SPEC.md`.
+Adds "Send to Mac" to the share sheet. Sends the chosen text or images, encrypted, to the Mac on the same Wi-Fi. If the Mac can't be reached, it queues them and tries again later on its own. Protocol and design decisions: [`../SPEC.md`](../SPEC.md).
 
-Gereksinim: Android 8.0 (API 26) veya üstü. QR okutmak için Google Play hizmetleri gerekir. Play hizmetleri yoksa elle giriş kullanılabilir.
+Requires Android 8.0 (API 26) or later. Scanning the QR code needs Google Play services; without them, use manual entry.
 
-## Derleme
+The app is in English, or in Turkish when that is the phone's language.
 
-Android Studio'da `android` klasörünü açıp **Build › Build APK(s)** deyin, ya da komut satırından derleyin (JDK 17 ve Android SDK gerekir):
+## Install
+
+Download `MacClip-<version>.apk` from [Releases](../../../releases) and open it on the phone. Android asks for permission to install from unknown sources; give it only to the app you opened the file with.
+
+An app built on your own machine is signed with a different key than the release APK. Android won't update one with the other: uninstall first (the pairing and any queued items are deleted), then install and pair again.
+
+## Build
+
+Open the `android` folder in Android Studio and choose **Build › Build APK(s)**, or build from the command line (needs JDK 17 and the Android SDK):
 
 ```bash
 ./gradlew assembleDebug
@@ -14,70 +22,70 @@ Android Studio'da `android` klasörünü açıp **Build › Build APK(s)** deyin
 
 APK: `app/build/outputs/apk/debug/app-debug.apk`
 
-## Kurulum
-
-- **USB ile:** Telefonda Geliştirici seçenekleri › USB hata ayıklama açıkken:
+- **Over USB:** with Developer options › USB debugging on:
   ```bash
   adb install -r app/build/outputs/apk/debug/app-debug.apk
   ```
-- **Elle:** APK'yı telefona kopyalayıp dosya yöneticisinden açın. Android "bilinmeyen kaynaklardan yükleme" izni ister. Bu izni yalnızca o dosya yöneticisine verin.
+- **By hand:** copy the APK to the phone and open it in a file manager.
 
-Güncellerken aynı makinede derlenmiş APK'yı kurun. Debug imza anahtarı farklı olursa Android güncellemeyi reddeder. Bu durumda önce uygulamayı kaldırmanız gerekir; eşleşme ve sıradaki öğeler silinir.
+To update, install an APK built on the same machine; a different debug key makes Android refuse the update.
 
-## Eşleştirme
+Making a signed release APK: [`../RELEASING.md`](../RELEASING.md).
 
-1. Mac'te MacClip ilk açılışta QR kodu gösterir. Daha sonra menüden **Yeniden eşleştir…** ile açılabilir.
-2. Telefonda MacClip'i açın, **QR kodu okut** deyin.
-3. Uygulama otomatik bağlantı testi yapar ve "Bağlantı başarılı ✓" yazmalı.
+## Pairing
 
-QR okunmazsa Mac'teki pencerede yazan adres, port ve anahtarı **Elle giriş** bölümüne yazıp **Kaydet** deyin.
+1. On the Mac, MacClip shows the QR code on first launch. Later you can open it with **Pair Again…** in the menu.
+2. On the phone, open MacClip and tap **Scan QR code**.
+3. The app runs a connection test automatically and should show "Connected ✓".
 
-## Kullanım
+If the QR code won't scan, type the address, port and key shown in the Mac's window under **Manual entry** and tap **Save**.
 
-Herhangi bir uygulamada metin seçip ya da görsel/ekran görüntüsü açıp **Paylaş › Mac'e gönder** deyin.
-- Ekranda bir şey açılmaz. Birkaç saniye içinde kısa bir mesaj görünür: "Gönderildi" ya da "Mac'e ulaşılamadı, sıraya alındı". Uygulama son kullanılanlar listesinde kalmaz, bildirim göstermez.
-- Birden fazla görsel seçerseniz her biri Mac'te ayrı kayıt olur.
-- Sınırlar: görsel başına 25 MB, metin 1 MB.
+## Usage
 
-### Sıra
+In any app, select text or open an image or screenshot and choose **Share › Send to Mac**.
+- Nothing opens on screen. Within a few seconds a short message appears: "Sent" or "Can't reach the Mac, queued". The app doesn't stay in Recents and shows no notification.
+- If you pick several images, each becomes its own item on the Mac.
+- Limits: 25 MB per image, 1 MB of text.
 
-Mac kapalıyken ya da başka bir ağdayken paylaştıklarınız telefonda bekler:
-- Telefon bir Wi-Fi'a bağlıyken yaklaşık 15 dakikada bir arka planda tekrar denenir. Android pil tasarrufu nedeniyle gecikme biraz daha uzun olabilir.
-- Hemen göndermek için MacClip'i açıp **Şimdi gönder** deyin.
-- En fazla 20 öğe bekler. 10 günden eskiler silinir. Mac'te sıralama paylaştığınız saate göre yapılır.
+### Queue
 
-## İzinler
+What you share while the Mac is off or on another network waits on the phone:
+- While the phone is on Wi-Fi it is retried in the background about every 15 minutes. Android's battery saving can make the delay a little longer.
+- To send right away, open MacClip and tap **Send now**.
+- At most 20 items wait. Items older than 10 days are deleted. On the Mac, items are ordered by when you shared them.
 
-Çalışma zamanında sorulan izin yoktur. Manifest'te yalnızca `INTERNET` ve `ACCESS_NETWORK_STATE` var.
-- **Düz HTTP:** Android 9'dan beri düz HTTP varsayılan olarak kapalıdır. `res/xml/network_security_config.xml` bunu açar. İçerik zaten AES-256-GCM ile şifrelenir, anahtar ağda dolaşmaz.
-- **Yedekleme:** Kapalıdır (`allowBackup="false"`). Eşleşme anahtarı Google yedeğine gitmez.
-- **Yerel ağ izni:** Yeni Android sürümleri yerel ağ erişimi için ayrı bir izin getirebilir. Uygulama şu an `targetSdk 36` ile derleniyor. İleride bir "yakındaki cihazlar / yerel ağ" izni sorulursa izin verin.
+## Permissions
 
-## Sorun giderme
+No runtime permission is asked. The manifest only has `INTERNET` and `ACCESS_NETWORK_STATE`.
+- **Plain HTTP:** since Android 9 plain HTTP is off by default; `res/xml/network_security_config.xml` turns it on. The content itself is encrypted with AES-256-GCM and the key never travels over the network.
+- **Backup:** off (`allowBackup="false"`), so the pairing key doesn't go to Google backup.
+- **Local network permission:** newer Android versions may add a separate permission for local network access. The app targets `targetSdk 36`. If a "nearby devices / local network" permission is ever asked, allow it.
 
-**"Mac'e ulaşılamadı"**
-1. Mac'te MacClip açık mı? Menünün altındaki gri satır "Dinleniyor · IP:port" yazmalı.
-2. Telefon ve Mac aynı Wi-Fi'da mı? Misafir ağı ya da "AP izolasyonu" cihazların birbirini görmesini engeller.
-3. Telefonun tarayıcısında `http://<Mac IP>:47812/` açın. `{"error":"method"}` görünüyorsa ağ bağlantısı vardır. Sorun anahtardadır: yeniden eşleştirin.
-4. Sayfa açılmıyorsa Mac'in güvenlik duvarında MacClip'e gelen bağlantı izni verilmemiş olabilir (Mac README'sine bakın).
+## Troubleshooting
 
-**Bonjour (mDNS) çalışmıyor**
-Uygulama önce eşleşmedeki IP'yi dener, ulaşamazsa Bonjour ile arar. Statik IP kullanıyorsanız Bonjour'a hiç ihtiyaç olmaz. Bazı modemler ve mesh sistemleri multicast'i engeller. Bu durumda Mac'in IP'si değişirse uygulamada adresi elle güncelleyin ya da yeniden eşleştirin.
+**"Can't reach the Mac"**
+1. Is MacClip running on the Mac? The grey line at the bottom of its menu should read "Listening · IP:port".
+2. Are the phone and the Mac on the same Wi-Fi? A guest network or "AP isolation" stops devices from seeing each other.
+3. Open `http://<Mac IP>:47812/` in the phone's browser. If you see `{"error":"method"}`, the network is fine and the problem is the key: pair again.
+4. If the page doesn't load, the Mac's firewall may not allow incoming connections to MacClip (see the Mac README).
 
-**"Anahtar uyuşmuyor"**
-Mac'te yeniden eşleştirme yapılmış. QR kodunu tekrar okutun. Sıradaki öğeler kaybolmaz.
+**Bonjour (mDNS) doesn't work**
+The app first tries the IP from pairing and only then searches with Bonjour. With a static IP you never need Bonjour. Some routers and mesh systems block multicast; if the Mac's IP then changes, update the address in the app or pair again.
 
-**Sıradakiler hiç gitmiyor**
-Bazı üreticiler (Xiaomi, Huawei, Samsung'un bazı ayarları) arka plan işlerini durdurur. Ayarlar › Uygulamalar › MacClip › Pil bölümünden kısıtlamayı kaldırın, ya da **Şimdi gönder**'i kullanın.
+**"The key doesn't match"**
+The Mac was paired again. Scan the QR code again. Queued items are kept.
 
-## Testler
+**Queued items never go out**
+Some manufacturers (Xiaomi, Huawei, some Samsung settings) stop background work. Remove the restriction under Settings › Apps › MacClip › Battery, or use **Send now**.
+
+## Tests
 
 ```bash
 ./gradlew testDebugUnitTest
 ```
 
-Çalışan bir Mac uygulamasına karşı uçtan uca test (ping, metin, görsel, yanlış anahtar). Anahtar Mac'teki `config.json` dosyasından alınır:
+End-to-end test against a running Mac app (ping, text, image, wrong key). The key comes from `config.json` on the Mac:
 
 ```bash
-./gradlew testDebugUnitTest -PmacclipTestKey=<anahtar> -PmacclipTestPort=47812 -PmacclipTestHost=<Mac IP>
+./gradlew testDebugUnitTest -PmacclipTestKey=<key> -PmacclipTestPort=47812 -PmacclipTestHost=<Mac IP>
 ```

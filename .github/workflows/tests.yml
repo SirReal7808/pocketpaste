@@ -1,8 +1,10 @@
-# Unit tests for both apps. Manual only while the repo is private (macOS runner minutes count 10x
-# against the free quota); add a pull_request trigger when the repo goes public.
+# Unit tests for both apps, on every pull request and push to main.
 name: Tests
 
 on:
+  pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 concurrency:

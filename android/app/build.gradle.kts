@@ -6,9 +6,9 @@ plugins {
 }
 
 // Release signing reads android/keystore.properties (not in git):
-//   storeFile=/absolute/path/to/macclip-release.jks
+//   storeFile=/absolute/path/to/pocketpaste-release.jks
 //   storePassword=…
-//   keyAlias=macclip
+//   keyAlias=pocketpaste
 //   keyPassword=…
 // Without it, assembleRelease produces an unsigned APK.
 val keystoreProperties = Properties().apply {
@@ -16,11 +16,11 @@ val keystoreProperties = Properties().apply {
 }
 
 android {
-    namespace = "dev.macclip.android"
+    namespace = "io.github.sirreal7808.pocketpaste"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "dev.macclip.android"
+        applicationId = "io.github.sirreal7808.pocketpaste"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -60,9 +60,9 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
 }
 
-// The integration test talks to a running Mac app: ./gradlew test -PmacclipTestKey=... -PmacclipTestPort=...
+// The integration test talks to a running Mac app: ./gradlew test -PpocketpasteTestKey=... -PpocketpasteTestPort=...
 tasks.withType<Test>().configureEach {
-    listOf("macclipTestKey", "macclipTestPort", "macclipTestHost").forEach { name ->
+    listOf("pocketpasteTestKey", "pocketpasteTestPort", "pocketpasteTestHost").forEach { name ->
         project.findProperty(name)?.let { systemProperty(name, it) }
     }
     outputs.upToDateWhen { false }

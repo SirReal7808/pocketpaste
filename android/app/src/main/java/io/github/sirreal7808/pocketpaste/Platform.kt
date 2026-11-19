@@ -1,4 +1,4 @@
-package dev.macclip.android
+package io.github.sirreal7808.pocketpaste
 
 import android.content.Context
 import android.net.nsd.NsdManager
@@ -46,7 +46,7 @@ object Graph {
 
 /** Finds the paired Mac over Bonjour by the key fingerprint in its TXT record. Blocks; never call on the main thread. */
 object Discovery {
-    private const val SERVICE_TYPE = "_macclip._tcp"
+    private const val SERVICE_TYPE = "_pocketpaste._tcp"
 
     fun find(context: Context, keyId: String, timeoutMs: Long): Pair<String, Int>? {
         val nsd = context.getSystemService(NsdManager::class.java) ?: return null

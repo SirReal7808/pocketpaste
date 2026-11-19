@@ -12,10 +12,10 @@
     <string name="test_connection">Bağlantıyı test et</string>
     <string name="send_now">Şimdi gönder</string>
     <string name="usage">Kullanım: herhangi bir uygulamada metin veya görseli paylaşıp \"Mac\'e gönder\"i seçin. Mac\'e ulaşılamazsa öğe sıraya alınır ve Wi-Fi\'dayken yaklaşık 15 dakikada bir yeniden denenir.</string>
-    <string name="not_paired">Eşleşmemiş. Mac\'teki MacClip menüsünden \"Yeniden eşleştir…\" ile QR kodunu açıp okutun.</string>
+    <string name="not_paired">Eşleşmemiş. Mac\'teki PocketPaste menüsünden \"Yeniden eşleştir…\" ile QR kodunu açıp okutun.</string>
     <string name="paired">Eşleşmiş: %1$s (%2$s:%3$d)</string>
     <string name="no_address_bonjour">adres yok, Bonjour</string>
-    <string name="not_a_pairing_code">Bu bir MacClip eşleşme kodu değil.</string>
+    <string name="not_a_pairing_code">Bu bir PocketPaste eşleşme kodu değil.</string>
     <string name="scan_failed">QR okunamadı: %1$s. Elle girişi kullanabilirsiniz.</string>
     <string name="invalid_manual">Port veya anahtar geçersiz. Anahtar, Mac\'teki eşleşme penceresinde yazan 43 karakterlik metindir.</string>
     <string name="pair_first">Önce eşleştirin.</string>
@@ -23,7 +23,7 @@
     <string name="test_ok">Bağlantı başarılı ✓</string>
     <string name="test_wrong_key">Mac\'e ulaşıldı ama anahtar uyuşmuyor. QR kodunu yeniden okutun.</string>
     <string name="test_unexpected">Mac\'e ulaşıldı ama beklenmeyen yanıt: %1$d</string>
-    <string name="test_unreachable">Mac\'e ulaşılamadı. Aynı Wi-Fi\'da mısınız, MacClip açık mı?\n(%1$s)</string>
+    <string name="test_unreachable">Mac\'e ulaşılamadı. Aynı Wi-Fi\'da mısınız, PocketPaste açık mı?\n(%1$s)</string>
     <string name="sending">Gönderiliyor…</string>
     <plurals name="sent_count">
         <item quantity="one">%d öğe gönderildi</item>
@@ -44,7 +44,7 @@
     <string name="share_failed">Gönderilemedi: %1$s</string>
     <string name="share_too_large">Çok büyük (görsel en fazla 25 MB)</string>
     <string name="share_unsupported">Yalnızca metin ve görsel gönderilebilir</string>
-    <string name="share_saved_unpaired">Kaydedildi. Göndermek için MacClip\'i açıp eşleştirin.</string>
+    <string name="share_saved_unpaired">Kaydedildi. Göndermek için PocketPaste\'i açıp eşleştirin.</string>
     <plurals name="share_skipped">
         <item quantity="one">" (%d öğe atlandı)"</item>
         <item quantity="other">" (%d öğe atlandı)"</item>

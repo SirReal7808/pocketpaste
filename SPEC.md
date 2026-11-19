@@ -1,4 +1,4 @@
-# MacClip: a local clipboard bridge from phone to Mac
+# PocketPaste: a local clipboard bridge from phone to Mac
 
 Sends text or an image chosen in Android's share sheet to a Mac on the same Wi-Fi. On the Mac, clicking an item in the menu bar list copies it to the clipboard.
 
@@ -9,7 +9,7 @@ Sends text or an image chosen in Android's share sheet to a Mac on the same Wi-F
 - Transport is plain HTTP. Content is encrypted with AES-256-GCM using a 256-bit key shared at pairing. The key never travels over the network.
 - One phone is paired. Pairing again creates a new key and the old one stops working.
 - Pairing uses a QR code shown on the Mac.
-- Discovery: first the IP and port from pairing (fastest with a static IP); if unreachable, Bonjour (`_macclip._tcp`, the TXT record `kid` picks the right Mac).
+- Discovery: first the IP and port from pairing (fastest with a static IP); if unreachable, Bonjour (`_pocketpaste._tcp`, the TXT record `kid` picks the right Mac).
 - User-facing text is English, with a Turkish translation used when the system language is Turkish.
 
 ### Mac app
@@ -19,7 +19,7 @@ Sends text or an image chosen in Android's share sheet to a Mac on the same Wi-F
 - Text: collapsed to one line, cut at 50 characters.
 - Image: a small preview and "Image · HH:MM".
 - Clicking copies to the clipboard. Images always go to the clipboard as **PNG**; if the long edge is over 4096 pixels, the clipboard copy is scaled down to that size (the original on disk is unchanged). Incoming content is never written to the clipboard on its own.
-- Stored on disk (`~/Library/Application Support/MacClip`, folder 0700, files 0600). Images are stored in the format the phone sent.
+- Stored on disk (`~/Library/Application Support/PocketPaste`, folder 0700, files 0600). Images are stored in the format the phone sent.
 - At most 20 items; items older than 10 days are deleted automatically.
 - When a new item arrives the icon blinks for 5 seconds, then keeps a dot. Opening the menu clears the dot. No macOS notifications.
 - Menu: Clear History, Pair Again, Open at Login, Quit.
@@ -36,7 +36,7 @@ Sends text or an image chosen in Android's share sheet to a Mac on the same Wi-F
 
 ### Pairing QR content
 ```
-macclip://pair?v=1&h=<ipv4>&p=<port>&k=<base64url key, 32 bytes>&n=<Mac name>
+pocketpaste://pair?v=1&h=<ipv4>&p=<port>&k=<base64url key, 32 bytes>&n=<Mac name>
 ```
 
 ### Requests

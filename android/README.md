@@ -1,4 +1,4 @@
-# MacClip · Android app
+# PocketPaste · Android app
 
 Adds "Send to Mac" to the share sheet. Sends the chosen text or images, encrypted, to the Mac on the same Wi-Fi. If the Mac can't be reached, it queues them and tries again later on its own. Protocol and design decisions: [`../SPEC.md`](../SPEC.md).
 
@@ -8,7 +8,7 @@ The app is in English, or in Turkish when that is the phone's language.
 
 ## Install
 
-Download `MacClip-<version>.apk` from [Releases](../../../releases) and open it on the phone. Android asks for permission to install from unknown sources; give it only to the app you opened the file with.
+Download `PocketPaste-<version>.apk` from [Releases](../../../releases) and open it on the phone. Android asks for permission to install from unknown sources; give it only to the app you opened the file with.
 
 An app built on your own machine is signed with a different key than the release APK. Android won't update one with the other: uninstall first (the pairing and any queued items are deleted), then install and pair again.
 
@@ -34,8 +34,8 @@ Making a signed release APK: [`../RELEASING.md`](../RELEASING.md).
 
 ## Pairing
 
-1. On the Mac, MacClip shows the QR code on first launch. Later you can open it with **Pair Again…** in the menu.
-2. On the phone, open MacClip and tap **Scan QR code**.
+1. On the Mac, PocketPaste shows the QR code on first launch. Later you can open it with **Pair Again…** in the menu.
+2. On the phone, open PocketPaste and tap **Scan QR code**.
 3. The app runs a connection test automatically and should show "Connected ✓".
 
 If the QR code won't scan, type the address, port and key shown in the Mac's window under **Manual entry** and tap **Save**.
@@ -51,7 +51,7 @@ In any app, select text or open an image or screenshot and choose **Share › Se
 
 What you share while the Mac is off or on another network waits on the phone:
 - While the phone is on Wi-Fi it is retried in the background about every 15 minutes. Android's battery saving can make the delay a little longer.
-- To send right away, open MacClip and tap **Send now**.
+- To send right away, open PocketPaste and tap **Send now**.
 - At most 20 items wait. Items older than 10 days are deleted. On the Mac, items are ordered by when you shared them.
 
 ## Permissions
@@ -64,10 +64,10 @@ No runtime permission is asked. The manifest only has `INTERNET` and `ACCESS_NET
 ## Troubleshooting
 
 **"Can't reach the Mac"**
-1. Is MacClip running on the Mac? The grey line at the bottom of its menu should read "Listening · IP:port".
+1. Is PocketPaste running on the Mac? The grey line at the bottom of its menu should read "Listening · IP:port".
 2. Are the phone and the Mac on the same Wi-Fi? A guest network or "AP isolation" stops devices from seeing each other.
 3. Open `http://<Mac IP>:47812/` in the phone's browser. If you see `{"error":"method"}`, the network is fine and the problem is the key: pair again.
-4. If the page doesn't load, the Mac's firewall may not allow incoming connections to MacClip (see the Mac README).
+4. If the page doesn't load, the Mac's firewall may not allow incoming connections to PocketPaste (see the Mac README).
 
 **Bonjour (mDNS) doesn't work**
 The app first tries the IP from pairing and only then searches with Bonjour. With a static IP you never need Bonjour. Some routers and mesh systems block multicast; if the Mac's IP then changes, update the address in the app or pair again.
@@ -76,7 +76,7 @@ The app first tries the IP from pairing and only then searches with Bonjour. Wit
 The Mac was paired again. Scan the QR code again. Queued items are kept.
 
 **Queued items never go out**
-Some manufacturers (Xiaomi, Huawei, some Samsung settings) stop background work. Remove the restriction under Settings › Apps › MacClip › Battery, or use **Send now**.
+Some manufacturers (Xiaomi, Huawei, some Samsung settings) stop background work. Remove the restriction under Settings › Apps › PocketPaste › Battery, or use **Send now**.
 
 ## Tests
 
@@ -87,5 +87,5 @@ Some manufacturers (Xiaomi, Huawei, some Samsung settings) stop background work.
 End-to-end test against a running Mac app (ping, text, image, wrong key). The key comes from `config.json` on the Mac:
 
 ```bash
-./gradlew testDebugUnitTest -PmacclipTestKey=<key> -PmacclipTestPort=47812 -PmacclipTestHost=<Mac IP>
+./gradlew testDebugUnitTest -PpocketpasteTestKey=<key> -PpocketpasteTestPort=47812 -PpocketpasteTestHost=<Mac IP>
 ```

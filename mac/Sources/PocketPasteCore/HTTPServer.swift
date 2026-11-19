@@ -48,7 +48,7 @@ public final class HTTPServer {
     private let port: UInt16
     private let maxBodyBytes: Int
     private let handler: Handler
-    private let queue = DispatchQueue(label: "macclip.http")
+    private let queue = DispatchQueue(label: "pocketpaste.http")
     private var listener: NWListener?
     /// Accessed on `queue` only.
     private var connections: [ObjectIdentifier: HTTPConnection] = [:]

@@ -1,4 +1,4 @@
-package dev.macclip.android
+package io.github.sirreal7808.pocketpaste
 
 import java.io.File
 import java.util.Properties

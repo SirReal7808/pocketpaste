@@ -1,4 +1,4 @@
-package dev.macclip.android
+package io.github.sirreal7808.pocketpaste
 
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -68,10 +68,10 @@ data class Pairing(val host: String, val port: Int, val key: String, val name: S
             .take(4).joinToString("") { "%02x".format(it) }
 
     companion object {
-        /** Parses `macclip://pair?v=1&h=<ip>&p=<port>&k=<key>&n=<name>` from the Mac's QR code. */
+        /** Parses `pocketpaste://pair?v=1&h=<ip>&p=<port>&k=<key>&n=<name>` from the Mac's QR code. */
         fun parse(text: String): Pairing? {
             val uri = runCatching { URI(text.trim()) }.getOrNull() ?: return null
-            if (uri.scheme != "macclip" || uri.host != "pair") return null
+            if (uri.scheme != "pocketpaste" || uri.host != "pair") return null
             val params = (uri.rawQuery ?: "").split("&").mapNotNull { part ->
                 val eq = part.indexOf('=')
                 if (eq < 0) null else part.substring(0, eq) to URLDecoder.decode(part.substring(eq + 1), "UTF-8")

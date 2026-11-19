@@ -22,26 +22,22 @@ The release is deliberately **not** signed with a Developer ID or notarized, so 
 
 ## Android: signed APK
 
-Needs a release keystore. Keep it and its passwords outside the repo and back them up: an APK signed with another key can't update installed copies.
+The release keystore (`pocketpaste-release.jks`, alias `pocketpaste`) is **not kept on the development machine**. The only copy is in the maintainer's private cloud storage, and its password is in the maintainer's password manager. Never commit it or leave a copy behind: an APK signed with another key can't update installed copies, so the key must never change or get lost.
 
-Create `android/keystore.properties` (ignored by git):
+1. Download the keystore to a temporary location.
+2. Build, entering the password when asked (it is read from the terminal and never written to disk):
 
-```properties
-storeFile=/absolute/path/to/pocketpaste-release.jks
-storePassword=…
-keyAlias=pocketpaste
-keyPassword=…
-```
+   ```bash
+   cd android
+   scripts/build-release.sh /tmp/path/pocketpaste-release.jks
+   ```
 
-```bash
-cd android
-./gradlew testDebugUnitTest assembleRelease
-cp app/build/outputs/apk/release/app-release.apk ../PocketPaste-<version>.apk
-```
+   The script runs the unit tests, builds, verifies the signature and writes `build/release/PocketPaste-<version>.apk` with its SHA-256.
+3. Delete the temporary keystore copy.
 
-Without `keystore.properties`, `assembleRelease` produces `app-release-unsigned.apk`, which Android won't install.
+Without the keystore, `./gradlew assembleRelease` produces `app-release-unsigned.apk`, which Android won't install.
 
 ## Publish
 
 1. Merge to `main` and tag it: `git tag -a v<version> -m "PocketPaste <version>"` and push the tag.
-2. Create the GitHub Release from the tag and attach `PocketPaste-<version>-mac.zip` and `PocketPaste-<version>.apk`, with SHA-256 checksums in the notes (`shasum -a 256 <file>`).
+2. Create the GitHub Release from the tag and attach `mac/build/release/PocketPaste-<version>-mac.zip` and `android/build/release/PocketPaste-<version>.apk`, with SHA-256 checksums in the notes (`shasum -a 256 <file>`).

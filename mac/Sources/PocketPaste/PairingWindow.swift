@@ -1,16 +1,16 @@
 import AppKit
 import CoreImage
-import MacClipCore
+import PocketPasteCore
 
 final class PairingWindowController: NSWindowController {
     init(pairingURL: String, addresses: [String], port: UInt16, key: String, name: String) {
         let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 380, height: 520),
                               styleMask: [.titled, .closable], backing: .buffered, defer: false)
-        window.title = "MacClip · " + L("Pair")
+        window.title = "PocketPaste · " + L("Pair")
         window.isReleasedWhenClosed = false
         super.init(window: window)
 
-        let title = NSTextField(labelWithString: L("Scan this code with the MacClip app on your phone"))
+        let title = NSTextField(labelWithString: L("Scan this code with the PocketPaste app on your phone"))
         title.font = .boldSystemFont(ofSize: 13)
         title.alignment = .center
 

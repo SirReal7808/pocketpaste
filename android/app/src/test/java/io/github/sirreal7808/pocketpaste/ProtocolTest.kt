@@ -1,4 +1,4 @@
-package dev.macclip.android
+package io.github.sirreal7808.pocketpaste
 
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
@@ -45,7 +45,7 @@ class PairingTest {
 
     @Test
     fun parsesMacQr() {
-        val p = Pairing.parse("macclip://pair?v=1&h=192.168.1.10&p=47812&k=$key&n=Mert%E2%80%99in%20Mac")
+        val p = Pairing.parse("pocketpaste://pair?v=1&h=192.168.1.10&p=47812&k=$key&n=Mert%E2%80%99in%20Mac")
         assertNotNull(p)
         assertEquals("192.168.1.10", p!!.host)
         assertEquals(47812, p.port)
@@ -56,8 +56,8 @@ class PairingTest {
     @Test
     fun rejectsBadInput() {
         assertNull(Pairing.parse("https://example.com"))
-        assertNull(Pairing.parse("macclip://pair?v=2&h=1.2.3.4&p=1&k=$key"))
-        assertNull(Pairing.parse("macclip://pair?v=1&h=1.2.3.4&p=99999&k=$key"))
+        assertNull(Pairing.parse("pocketpaste://pair?v=2&h=1.2.3.4&p=1&k=$key"))
+        assertNull(Pairing.parse("pocketpaste://pair?v=1&h=1.2.3.4&p=99999&k=$key"))
         assertNull(Pairing.create("1.2.3.4", "47812", "short"))
         assertNotNull(Pairing.create(" 1.2.3.4 ", " 47812 ", " $key "))
     }
@@ -109,16 +109,16 @@ class OutboxTest {
 
 /**
  * Talks to a running Mac app. Skipped unless the key is given:
- * ./gradlew test -PmacclipTestKey=<key> -PmacclipTestPort=<port>
+ * ./gradlew test -PpocketpasteTestKey=<key> -PpocketpasteTestPort=<port>
  */
 class MacIntegrationTest {
-    private val key: String? = System.getProperty("macclipTestKey")
-    private val port = System.getProperty("macclipTestPort")?.toInt() ?: DEFAULT_PORT
-    private val host = System.getProperty("macclipTestHost") ?: "127.0.0.1"
+    private val key: String? = System.getProperty("pocketpasteTestKey")
+    private val port = System.getProperty("pocketpasteTestPort")?.toInt() ?: DEFAULT_PORT
+    private val host = System.getProperty("pocketpasteTestHost") ?: "127.0.0.1"
 
     @Test
     fun sendsToRealMac() {
-        assumeTrue("macclipTestKey not set", key != null)
+        assumeTrue("pocketpasteTestKey not set", key != null)
         val pairing = Pairing.create(host, port.toString(), key!!, "Mac")!!
         val outbox = Outbox(Files.createTempDirectory("outbox").toFile())
         val sender = Sender(outbox, pairing) { null }

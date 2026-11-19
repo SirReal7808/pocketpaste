@@ -1,5 +1,5 @@
 import AppKit
-import MacClipCore
+import PocketPasteCore
 
 /// Menu row for an image: thumbnail, title, and a folder button on the right that reveals the file in Finder.
 /// Clicking anywhere else copies, like a normal menu item. A view-based menu item draws its own highlight.

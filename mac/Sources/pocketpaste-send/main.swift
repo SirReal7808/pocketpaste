@@ -1,11 +1,11 @@
 // Test sender: does what the Android app does, so the Mac app can be tested without a phone.
 import Foundation
-import MacClipCore
+import PocketPasteCore
 
 let usage = """
-Usage: macclip-send [options] text <text>
-       macclip-send [options] image <file>
-       macclip-send [options] ping
+Usage: pocketpaste-send [options] text <text>
+       pocketpaste-send [options] image <file>
+       pocketpaste-send [options] ping
 
 Options:
   --host <address>    Default 127.0.0.1
@@ -14,7 +14,7 @@ Options:
   --age <seconds>     Move the share time back by this much (negative moves it forward)
   --key <base64url>   Use this key instead of config.json
 
-Key and port are read from config.json in MACCLIP_HOME (default ~/Library/Application Support/MacClip).
+Key and port are read from config.json in POCKETPASTE_HOME (default ~/Library/Application Support/PocketPaste).
 """
 
 func fail(_ message: String) -> Never {

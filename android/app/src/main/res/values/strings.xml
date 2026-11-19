@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">MacClip</string>
+    <string name="app_name" translatable="false">PocketPaste</string>
     <string name="share_label">Send to Mac</string>
 
     <!-- Settings screen -->
@@ -14,10 +14,10 @@
     <string name="test_connection">Test connection</string>
     <string name="send_now">Send now</string>
     <string name="usage">How to use: share text or an image from any app and choose \"Send to Mac\". If the Mac can\'t be reached, the item is queued and retried about every 15 minutes while on Wi-Fi.</string>
-    <string name="not_paired">Not paired. On the Mac, open the MacClip menu, choose \"Pair Again…\" and scan the QR code.</string>
+    <string name="not_paired">Not paired. On the Mac, open the PocketPaste menu, choose \"Pair Again…\" and scan the QR code.</string>
     <string name="paired">Paired: %1$s (%2$s:%3$d)</string>
     <string name="no_address_bonjour">no address, Bonjour</string>
-    <string name="not_a_pairing_code">This is not a MacClip pairing code.</string>
+    <string name="not_a_pairing_code">This is not a PocketPaste pairing code.</string>
     <string name="scan_failed">Couldn\'t read the QR code: %1$s. You can use manual entry.</string>
     <string name="invalid_manual">Invalid port or key. The key is the 43-character text shown in the Mac\'s pairing window.</string>
     <string name="pair_first">Pair first.</string>
@@ -25,7 +25,7 @@
     <string name="test_ok">Connected ✓</string>
     <string name="test_wrong_key">Reached the Mac, but the key doesn\'t match. Scan the QR code again.</string>
     <string name="test_unexpected">Reached the Mac, but got an unexpected reply: %1$d</string>
-    <string name="test_unreachable">Can\'t reach the Mac. Are you on the same Wi-Fi, and is MacClip running?\n(%1$s)</string>
+    <string name="test_unreachable">Can\'t reach the Mac. Are you on the same Wi-Fi, and is PocketPaste running?\n(%1$s)</string>
     <string name="sending">Sending…</string>
     <plurals name="sent_count">
         <item quantity="one">%d item sent</item>
@@ -47,7 +47,7 @@
     <string name="share_failed">Couldn\'t send: %1$s</string>
     <string name="share_too_large">Too large (images up to 25 MB)</string>
     <string name="share_unsupported">Only text and images can be sent</string>
-    <string name="share_saved_unpaired">Saved. Open MacClip and pair to send it.</string>
+    <string name="share_saved_unpaired">Saved. Open PocketPaste and pair to send it.</string>
     <plurals name="share_skipped">
         <item quantity="one">" (%d item skipped)"</item>
         <item quantity="other">" (%d items skipped)"</item>

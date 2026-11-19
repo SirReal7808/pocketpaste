@@ -12,5 +12,5 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "MacClip"
+rootProject.name = "PocketPaste"
 include(":app")

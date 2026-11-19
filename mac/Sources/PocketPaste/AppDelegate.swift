@@ -1,6 +1,6 @@
 import AppKit
 import CryptoKit
-import MacClipCore
+import PocketPasteCore
 import Network
 import ServiceManagement
 import SystemConfiguration
@@ -191,7 +191,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private func showError(_ message: String) {
         let alert = NSAlert()
         alert.alertStyle = .warning
-        alert.messageText = "MacClip"
+        alert.messageText = "PocketPaste"
         alert.informativeText = message
         NSApp.activate(ignoringOtherApps: true)
         alert.runModal()

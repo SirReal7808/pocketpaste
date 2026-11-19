@@ -2,13 +2,13 @@ import CryptoKit
 import Foundation
 
 public enum Paths {
-    /// `MACCLIP_HOME` overrides the location, for tests and the CLI.
+    /// `POCKETPASTE_HOME` overrides the location, for tests and the CLI.
     public static var root: URL {
-        if let custom = ProcessInfo.processInfo.environment["MACCLIP_HOME"], !custom.isEmpty {
+        if let custom = ProcessInfo.processInfo.environment["POCKETPASTE_HOME"], !custom.isEmpty {
             return URL(fileURLWithPath: custom, isDirectory: true)
         }
         let support = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        return support.appendingPathComponent("MacClip", isDirectory: true)
+        return support.appendingPathComponent("PocketPaste", isDirectory: true)
     }
 }
 
@@ -86,11 +86,11 @@ public struct AppConfig: Codable, Equatable {
 }
 
 public enum Pairing {
-    public static let serviceType = "_macclip._tcp"
+    public static let serviceType = "_pocketpaste._tcp"
 
     public static func url(host: String, port: UInt16, key: String, name: String) -> String {
         var c = URLComponents()
-        c.scheme = "macclip"
+        c.scheme = "pocketpaste"
         c.host = "pair"
         c.queryItems = [
             URLQueryItem(name: "v", value: "1"),

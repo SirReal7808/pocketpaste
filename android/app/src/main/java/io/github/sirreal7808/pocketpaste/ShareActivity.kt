@@ -1,4 +1,4 @@
-package dev.macclip.android
+package io.github.sirreal7808.pocketpaste
 
 import android.app.Activity
 import android.content.Context

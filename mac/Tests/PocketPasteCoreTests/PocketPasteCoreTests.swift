@@ -2,7 +2,7 @@ import CryptoKit
 import ImageIO
 import UniformTypeIdentifiers
 import XCTest
-@testable import MacClipCore
+@testable import PocketPasteCore
 
 final class EnvelopeTests: XCTestCase {
     let key = SymmetricKey(size: .bits256)
@@ -66,7 +66,7 @@ final class ConfigTests: XCTestCase {
     func testPairingURL() {
         let url = Pairing.url(host: "192.168.1.10", port: 47812, key: "abc-_", name: "Mert’in MacBook'u")
         let c = URLComponents(string: url)!
-        XCTAssertEqual(c.scheme, "macclip")
+        XCTAssertEqual(c.scheme, "pocketpaste")
         XCTAssertEqual(c.host, "pair")
         XCTAssertEqual(c.queryItems?.first { $0.name == "n" }?.value, "Mert’in MacBook'u")
         XCTAssertEqual(c.queryItems?.first { $0.name == "k" }?.value, "abc-_")

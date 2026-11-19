@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "MacClip",
+    name: "PocketPaste",
     platforms: [.macOS(.v13)],
     targets: [
-        .target(name: "MacClipCore"),
-        .executableTarget(name: "MacClip", dependencies: ["MacClipCore"]),
-        .executableTarget(name: "macclip-send", dependencies: ["MacClipCore"]),
-        .testTarget(name: "MacClipCoreTests", dependencies: ["MacClipCore"]),
+        .target(name: "PocketPasteCore"),
+        .executableTarget(name: "PocketPaste", dependencies: ["PocketPasteCore"]),
+        .executableTarget(name: "pocketpaste-send", dependencies: ["PocketPasteCore"]),
+        .testTarget(name: "PocketPasteCoreTests", dependencies: ["PocketPasteCore"]),
     ]
 )

@@ -7,7 +7,7 @@
 "Clear History" = "Geçmişi temizle";
 "Pair Again…" = "Yeniden eşleştir…";
 "Open at Login" = "Girişte başlat";
-"Quit MacClip" = "Çık";
+"Quit PocketPaste" = "Çık";
 "Show in Finder" = "Finder'da göster";
 
 "Couldn’t open the data folder: %@" = "Kayıt klasörü açılamadı: %@";
@@ -30,7 +30,7 @@
 "Couldn’t set Open at Login: %@\n\nMake sure the app runs from the /Applications folder." = "Girişte başlatma ayarlanamadı: %@\n\nUygulamanın /Applications klasöründen çalıştığından emin olun.";
 
 "Pair" = "Eşleştir";
-"Scan this code with the MacClip app on your phone" = "Telefondaki MacClip uygulamasıyla bu kodu okutun";
+"Scan this code with the PocketPaste app on your phone" = "Telefondaki PocketPaste uygulamasıyla bu kodu okutun";
 "not found (connected to a network?)" = "bulunamadı (ağa bağlı mı?)";
 "For manual entry:" = "Elle giriş için:";
 "Address:" = "Adres:";

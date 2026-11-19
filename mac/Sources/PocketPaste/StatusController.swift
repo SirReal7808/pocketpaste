@@ -1,5 +1,5 @@
 import AppKit
-import MacClipCore
+import PocketPasteCore
 
 final class StatusController: NSObject, NSMenuDelegate {
     private static let mainMenuCount = 5
@@ -104,7 +104,7 @@ final class StatusController: NSObject, NSMenuDelegate {
         ])
         info.isEnabled = false
         menu.addItem(info)
-        menu.addItem(action(L("Quit MacClip"), #selector(quit), key: "q"))
+        menu.addItem(action(L("Quit PocketPaste"), #selector(quit), key: "q"))
     }
 
     private func menuItem(for item: HistoryItem) -> NSMenuItem {
@@ -197,8 +197,8 @@ enum Pasteboard {
 enum IconRenderer {
     static func image(dot: Bool) -> NSImage {
         let config = NSImage.SymbolConfiguration(pointSize: 14, weight: .regular)
-        let symbol = (NSImage(systemSymbolName: "iphone.and.arrow.forward", accessibilityDescription: "MacClip")
-            ?? NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: "MacClip")!)
+        let symbol = (NSImage(systemSymbolName: "iphone.and.arrow.forward", accessibilityDescription: "PocketPaste")
+            ?? NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: "PocketPaste")!)
             .withSymbolConfiguration(config)!
         let size = NSSize(width: 22, height: 18)
         let image = NSImage(size: size, flipped: false) { rect in

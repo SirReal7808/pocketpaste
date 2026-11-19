@@ -10,13 +10,13 @@
 		<string>tr</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>dev.macclip.MacClip</string>
+	<string>io.github.sirreal7808.pocketpaste</string>
 	<key>CFBundleName</key>
-	<string>MacClip</string>
+	<string>PocketPaste</string>
 	<key>CFBundleDisplayName</key>
-	<string>MacClip</string>
+	<string>PocketPaste</string>
 	<key>CFBundleExecutable</key>
-	<string>MacClip</string>
+	<string>PocketPaste</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -28,10 +28,10 @@
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>MacClip uses the local network to receive text and images from your phone on the same Wi-Fi.</string>
+	<string>PocketPaste uses the local network to receive text and images from your phone on the same Wi-Fi.</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_macclip._tcp</string>
+		<string>_pocketpaste._tcp</string>
 	</array>
 </dict>
 </plist>

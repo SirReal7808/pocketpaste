@@ -1,19 +1,14 @@
-import java.util.Properties
-
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
 
-// Release signing reads android/keystore.properties (not in git):
-//   storeFile=/absolute/path/to/pocketpaste-release.jks
-//   storePassword=…
-//   keyAlias=pocketpaste
-//   keyPassword=…
-// Without it, assembleRelease produces an unsigned APK.
-val keystoreProperties = Properties().apply {
-    rootProject.file("keystore.properties").takeIf { it.exists() }?.inputStream()?.use { load(it) }
-}
+// Release signing reads the keystore from the environment (set by scripts/build-release.sh):
+//   POCKETPASTE_KEYSTORE=/absolute/path/to/pocketpaste-release.jks
+//   POCKETPASTE_KEYSTORE_PASSWORD=…   (store and key password are the same, PKCS12)
+// The keystore is kept off this machine; see RELEASING.md. Without it, assembleRelease produces an unsigned APK.
+val releaseKeystore = System.getenv("POCKETPASTE_KEYSTORE")?.takeIf { it.isNotBlank() }
+val releaseKeystorePassword = System.getenv("POCKETPASTE_KEYSTORE_PASSWORD")
 
 android {
     namespace = "io.github.sirreal7808.pocketpaste"
@@ -28,12 +23,12 @@ android {
     }
 
     signingConfigs {
-        if (keystoreProperties.isNotEmpty()) {
+        if (releaseKeystore != null && releaseKeystorePassword != null) {
             create("release") {
-                storeFile = file(keystoreProperties.getProperty("storeFile"))
-                storePassword = keystoreProperties.getProperty("storePassword")
-                keyAlias = keystoreProperties.getProperty("keyAlias")
-                keyPassword = keystoreProperties.getProperty("keyPassword")
+                storeFile = file(releaseKeystore)
+                storePassword = releaseKeystorePassword
+                keyAlias = "pocketpaste"
+                keyPassword = releaseKeystorePassword
             }
         }
     }

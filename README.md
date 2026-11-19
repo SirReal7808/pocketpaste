@@ -6,6 +6,8 @@ Share text or an image on your Android phone, click it in your Mac's menu bar, a
 - **Local and encrypted.** Phone and Mac talk directly over your Wi-Fi. No account, no cloud, no server. Every request is encrypted with AES-256-GCM using a key that only travels inside the pairing QR code.
 - **Works when the Mac is away.** If the Mac is asleep or on another network, the phone queues the item and sends it later in the background.
 
+![The PocketPaste menu on the Mac, listing recent texts and images sent from the phone](docs/images/mac-menu.png)
+
 ## Download
 
 From [Releases](../../releases):
